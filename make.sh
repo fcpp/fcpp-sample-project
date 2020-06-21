@@ -128,7 +128,21 @@ function powerset() {
 }
 
 while [ "$1" != "" ]; do
-    if [ "$1" == "doc" ]; then
+    if [ "$1" == "clean" ]; then
+        shift 1
+        rm -rf doc
+        bazel clean
+    elif [ "$1" == "here" ]; then
+        shift 1
+        export TEST_TMPDIR=`pwd`
+    elif [ "$1" == "gcc" ]; then
+        shift 1
+        gcc=$(which $(compgen -c | grep "^gcc-.$" | uniq))
+        gpp=$(which $(compgen -c | grep "^g++-.$" | uniq))
+        export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
+        export CC="$gcc"
+        export CXX="$gpp"
+    elif [ "$1" == "doc" ]; then
         shift 1
         mkdoc
     elif [ "$1" == "build" ]; then
@@ -138,8 +152,11 @@ while [ "$1" != "" ]; do
         alltargets=""
         while [ "$1" != "" ]; do
             if [ "$1" == "all" ]; then
-                alltargets="$alltargets lib/... project/..."
-            else
+                alltargets="$alltargets lib/... test/..."
+                 for folder in ${folders[@]}; do
+                    alltargets="$alltargets $folder/..."
+                done
+           else
                 for folder in ${folders[@]}; do
                     finder $folder "$1"
                 done
@@ -162,7 +179,10 @@ while [ "$1" != "" ]; do
         alltargets=""
         while [ "$1" != "" ]; do
             if [ "$1" == "all" ]; then
-                alltargets="$alltargets test/... project/..."
+                alltargets="$alltargets test/..."
+                for folder in ${folders[@]}; do
+                    alltargets="$alltargets $folder/..."
+                done
             else
                 finder "test" "$1"
                 for folder in ${folders[@]}; do
@@ -196,28 +216,18 @@ while [ "$1" != "" ]; do
             usage
         fi
         mkdoc
-        builder test test/... project/...
+        alltargets="test/..."
+        for folder in ${folders[@]}; do
+            alltargets="$alltargets $folder/..."
+        done
+        builder test $alltargets
         if [ "$copts" == "" ]; then
             for o in `powerset FCPP_EXPORT_NUM=2 FCPP_EXPORT_PTR=false FCPP_ONLINE_DROP=true FCPP_PARALLEL=true`; do
                 copts=`echo "$o" | sed "s|#| --copt=-D|g"`
-                builder test test/... project/...
+                builder test $alltargets
             done
         fi
         quitter
-    elif [ "$1" == "clean" ]; then
-        shift 1
-        rm -rf doc
-        bazel clean
-    elif [ "$1" == "gcc" ]; then
-        shift 1
-        gcc=$(which $(compgen -c | grep "^gcc-.$" | uniq))
-        gpp=$(which $(compgen -c | grep "^g++-.$" | uniq))
-        export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
-        export CC="$gcc"
-        export CXX="$gpp"
-    elif [ "$1" == "here" ]; then
-        shift 1
-        export TEST_TMPDIR=`pwd`
     else
         usage
     fi

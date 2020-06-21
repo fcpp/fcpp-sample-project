@@ -31,10 +31,17 @@ vagrant halt
 
 ### Docker
 
-Download Docker from [https://www.docker.com](https://www.docker.com), then type the following commands in a terminal:
+Download Docker from [https://www.docker.com](https://www.docker.com), then download the Docker container from GitHub by typing the following command in a terminal:
 ```
-docker build -t fcpp .
-docker run -it --volume $PWD:/fcpp --workdir /fcpp fcpp bash
+docker pull docker.pkg.github.com/fcpp/fcpp/container:1.0
+```
+Alternatively, you can build the container yourself with the following command:
+```
+docker build -t docker.pkg.github.com/fcpp/fcpp/container:1.0 .
+```
+Once you have the Docker container locally available, type the following commands:
+```
+docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fcpp/container:1.0 bash
 ./make.sh run -O runner
 ```
 Then you should get output about building the experiments and running them (in the Docker container). After that you can exit and stop the container through:
