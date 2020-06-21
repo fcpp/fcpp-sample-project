@@ -10,13 +10,13 @@ This FCPP translation has been presented at [ACSOS 2020 - 1st IEEE International
 
 ### References
 
-- FCPP main website: [](https://fcpp.github.io).
-- FCPP documentation: [](http://fcpp-doc.surge.sh).
-- FCPP sources: [](https://github.com/fcpp/fcpp).
+- FCPP main website: [https://fcpp.github.io](https://fcpp.github.io).
+- FCPP documentation: [http://fcpp-doc.surge.sh](http://fcpp-doc.surge.sh).
+- FCPP sources: [https://github.com/fcpp/fcpp](https://github.com/fcpp/fcpp).
 
 ### Vagrant
 
-Download Vagrant from [](https://www.vagrantup.com), then type the following commands in a terminal:
+Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), then type the following commands in a terminal:
 ```
 vagrant up
 vagrant ssh
@@ -31,7 +31,7 @@ vagrant halt
 
 ### Docker
 
-Download Docker from [](https://www.docker.com), then type the following commands in a terminal:
+Download Docker from [https://www.docker.com](https://www.docker.com), then type the following commands in a terminal:
 ```
 docker build -t fcpp .
 docker run -it --volume $PWD:/fcpp --workdir /fcpp fcpp bash
@@ -47,6 +47,6 @@ exit
 In order to get started on your machine you need the following installed:
 
 - [Bazel](https://bazel.build) (tested with version 2.1.0)
-- [GCC](https://gcc.gnu.org) (tested with version 9.2.0)
+- [GCC](https://gcc.gnu.org) (tested with version 9.3.0)
 
 Once you have them installed, you should be able to run `./make.sh run -O runner`, getting output about building the experiments and running them.
