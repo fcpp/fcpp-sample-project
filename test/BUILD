@@ -4,6 +4,7 @@ cc_test(
     deps = [
         "@gtest//:main",
         "@fcpp//lib:fcpp",
+        "@fcpp//test:test_net",
         "//lib:collection_compare",
     ],
     copts = ['-Iexternal/gtest/googletest/include/'],

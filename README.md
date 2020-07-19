@@ -2,7 +2,7 @@
 
 Sample project provided with the FCPP distribution, designed to help setup of FCPP-based projects.
 
-The project is a transation in FCPP of the experiments in [this repository](https://bitbucket.org/Harniver/aamas19-summarising), presented at [AAMAS 2019 - 18th International Conference on Autonomous Agents and Multiagent Systems](http://aamas2019.encs.concordia.ca), which compare the performance of existing self-stabilising collection algorithms.
+The project is a translation in FCPP of the experiments in [this repository](https://bitbucket.org/Harniver/aamas19-summarising), presented at [AAMAS 2019 - 18th International Conference on Autonomous Agents and Multiagent Systems](http://aamas2019.encs.concordia.ca), which compare the performance of existing self-stabilising collection algorithms.
 
 This FCPP translation has been presented at [ACSOS 2020 - 1st IEEE International Conference on Autonomic Computing and Self-Organizing Systems](https://conf.researchr.org/home/acsos-2020) through [this paper](http://giorgio.audrito.info/static/fcpp.pdf). For any issues with reproducing the experiments, please contact [Giorgio Audrito](mailto:giorgio.audrito@unito.it).
 

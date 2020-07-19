@@ -5,6 +5,8 @@ function usage() {
     echo -e "    \033[1mclean\033[0m:                           cleans all built files (can be chained)"
     echo -e "    \033[1mhere\033[0m:                            sets the working directory here (can be chained)"
     echo -e "    \033[1mgcc\033[0m:                             sets the compiler to gcc (can be chained)"
+    echo -e "    \033[1mgrep\033[0m:                            searches for a pattern in the library"
+    echo -e "       <pattern>"
     echo -e "    \033[1mdoc\033[0m:                             builds the documentation (can be chained)"
     echo -e "    \033[1mbuild\033[0m:                           builds binaries for given targets, skipping tests"
     echo -e "       <copts...> <targets...>"
@@ -142,6 +144,17 @@ while [ "$1" != "" ]; do
         export BAZEL_USE_CPP_ONLY_TOOLCHAIN=1
         export CC="$gcc"
         export CXX="$gpp"
+    elif [ "$1" == "grep" ]; then
+        pattern="$2"
+        shift 2
+        for folder in lib test ${folders[@]}; do
+            for f in $folder/*.?pp $folder/*/*.?pp; do
+                if [ `cat "$f" | grep "$pattern" | wc -l` -gt 0 ]; then
+                    echo -e "\n==> $f <=="
+                    cat -n $f | grep "$pattern"
+                fi
+            done
+        done | less
     elif [ "$1" == "doc" ]; then
         shift 1
         mkdoc
@@ -221,12 +234,6 @@ while [ "$1" != "" ]; do
             alltargets="$alltargets $folder/..."
         done
         builder test $alltargets
-        if [ "$copts" == "" ]; then
-            for o in `powerset FCPP_EXPORT_NUM=2 FCPP_EXPORT_PTR=false FCPP_ONLINE_DROP=true FCPP_PARALLEL=true`; do
-                copts=`echo "$o" | sed "s|#| --copt=-D|g"`
-                builder test $alltargets
-            done
-        fi
         quitter
     else
         usage
