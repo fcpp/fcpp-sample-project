@@ -14,5 +14,5 @@ git_repository(
     name = "fcpp",
     remote = "https://github.com/fcpp/fcpp.git",
     strip_prefix = "src",
-    tag = "v0.5.2",
+    tag = "v0.5.3",
 )
