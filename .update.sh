@@ -12,6 +12,9 @@ fi
 repo="https://raw.githubusercontent.com/fcpp/fcpp/master"
 
 $cmd .gitignore $repo/.gitignore
+for file in plot.asy plot_builder.py; do
+    $cmd plotter/$file $repo/src/extras/plotter/$file
+done
 for file in .bazelrc gtest.BUILD make.sh Dockerfile Vagrantfile; do
     $cmd $file $repo/src/$file
 done
