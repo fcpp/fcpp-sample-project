@@ -56,4 +56,4 @@ In order to get started on your machine you need the following installed:
 - [Bazel](https://bazel.build) (tested with version 2.1.0)
 - [GCC](https://gcc.gnu.org) (tested with version 9.3.0)
 
-Once you have them installed, you should be able to run `./make.sh run -O runner`, getting output about building the experiments and running them.
+Once you have them installed, you should be able to run `./make.sh gcc run -O runner`, getting output about building the experiments and running them.

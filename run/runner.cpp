@@ -14,13 +14,13 @@ using namespace coordination::tags;
 #define MAXX        2000
 #define MAXY        200
 
-using spawn_s = sequence::multiple<distribution::constant<times_t, 0>, DEVICE_NUM>;
+using spawn_s = sequence::multiple_n<DEVICE_NUM, 0>;
 
-using round_s = sequence::periodic<distribution::interval_t<times_t, 0, 1>, distribution::weibull_t<times_t, 100, 25, 100>, distribution::constant<times_t, END_TIME>>;
+using round_s = sequence::periodic<distribution::interval_n<times_t, 0, 1>, distribution::weibull_n<times_t, 100, 25, 100>, distribution::constant_n<times_t, END_TIME+2>>;
 
-using export_s = sequence::periodic<distribution::constant<times_t, 0>, distribution::constant<times_t, 10>, distribution::constant<times_t, END_TIME>>;
+using export_s = sequence::periodic_n<1, 0, 10, END_TIME>;
 
-using rectangle_d = distribution::vec<distribution::interval_t<double, 0, MAXX>, distribution::interval_t<double, 0, MAXY>>;
+using rectangle_d = distribution::rect_n<1, 0, 0, MAXX, MAXY>;
 
 DECLARE_OPTIONS(opt,
     program<main>,
@@ -54,7 +54,7 @@ DECLARE_OPTIONS(opt,
     spawn_schedule<spawn_s>,
     init<
         x,          rectangle_d,
-        algorithm,  distribution::constant<int, ALGO>
+        algorithm,  distribution::constant_n<int, ALGO>
     >,
     connector<connect::fixed<100>>
 );
