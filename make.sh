@@ -334,7 +334,7 @@ while [ "$1" != "" ]; do
                 fil=`ls output/raw/$name*.txt | wc -l`
                 row=`cat output/raw/$name*.txt | grep -v "^#" | wc -l`
                 echo -e "         `timeformat $tim`s   `ramformat $mem` `ramformat $avg` `ramformat $max` `numformat $fil 7` `numformat $row 7`\n\033[J"
-                ( cat $file | tail -n 10; echo -e "\n\n\n\n\n\n\n\n\n" ) | head -n 10
+                ( cat $file | tail -n 10 | cut -c 1-`tput cols`; echo -e "\n\n\n\n\n\n\n\n\n" ) | head -n 10
                 echo -en "\033[12A"
                 sleep 1
             done
