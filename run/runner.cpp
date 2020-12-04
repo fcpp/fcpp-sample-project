@@ -23,7 +23,7 @@ using export_s = sequence::periodic_n<1, 0, 10, END_TIME>;
 using rectangle_d = distribution::rect_n<1, 0, 0, MAXX, MAXY>;
 
 DECLARE_OPTIONS(opt,
-    program<main>,
+    program<coordination::main>,
     round_schedule<round_s>,
     exports<
         device_t, double, field<double>, vec<2>,

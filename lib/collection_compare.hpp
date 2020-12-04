@@ -43,7 +43,7 @@ namespace tags {
 
 
 //! @brief Computes the distance from a source through adaptive bellmann-ford with old+nbr.
-FUN() double generic_distance(ARGS, int algorithm, bool source) { CODE
+FUN double generic_distance(ARGS, int algorithm, bool source) { CODE
     if (algorithm == 0) return abf_distance(CALL, source);
     if (algorithm == 1) return bis_distance(CALL, source, 1.0, 50.0);
     if (algorithm == 2) return flex_distance(CALL, source, 0.2, 100.0, 0.1, 10);
@@ -51,7 +51,7 @@ FUN() double generic_distance(ARGS, int algorithm, bool source) { CODE
 }
 
 //! @brief Device counting case study.
-FUN() void device_counting(ARGS, bool is_source, double dist) { CODE
+FUN void device_counting(ARGS, bool is_source, double dist) { CODE
     auto adder = [](double x, double y) {
         return x+y;
     };
@@ -71,7 +71,7 @@ FUN() void device_counting(ARGS, bool is_source, double dist) { CODE
 }
 
 //! @brief Progress tracking case study.
-FUN() void progress_tracking(ARGS, bool is_source, device_t source_id, double dist) { CODE
+FUN void progress_tracking(ARGS, bool is_source, device_t source_id, double dist) { CODE
     double value = distance(node.net.node_at(source_id).position(), node.position()) + (500 - node.current_time());
     double threshold = 3.5 / count_hood(CALL);
     
@@ -94,7 +94,7 @@ FUN() void progress_tracking(ARGS, bool is_source, device_t source_id, double di
 }
 
 //! @brief Main function.
-FUN() void collection_compare(ARGS) { CODE
+MAIN() {
     rectangle_walk(CALL, make_vec(0,0), make_vec(2000,200), 30.5, 1);
     
     device_t source_id = node.current_time() < 250 ? 0 : 1;
@@ -108,10 +108,6 @@ FUN() void collection_compare(ARGS) { CODE
 
 
 }
-
-
-//! @brief Main struct calling `collection_compare`.
-MAIN(coordination::collection_compare,);
 
 
 }
