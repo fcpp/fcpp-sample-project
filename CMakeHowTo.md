@@ -1,4 +1,4 @@
-# FCPP - Sample project - CMake build guide
+# FCPPGL - Sample project - CMake build guide
 
 ## WINDOWS (MinGW-w64)
 

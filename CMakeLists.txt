@@ -1,6 +1,13 @@
 # CMake 3.9 or newer
 cmake_minimum_required(VERSION 3.9)
 
+# Defining functions
+function(copyTextureFolder target source dest)
+	add_custom_command(TARGET ${ARGV0} POST_BUILD
+					   COMMAND ${CMAKE_COMMAND} -E copy_directory
+							${ARGV1}/textures/ ${ARGV2}/textures/)
+endfunction()
+
 # Compiling options
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -23,20 +30,17 @@ project(fcppGL
 )
 
 # Executable target
-add_executable(fcppGL ./run/runner.cpp
-                      ./lib/collection_compare.cpp)
+add_executable(fcppGL ./fcpp/src/test/simulation/displayer.cpp)
 
 # VERSION property
 set_target_properties(fcppGL PROPERTIES VERSION &{PROJECT_VERSION})
-
-# Include directories
-target_include_directories(fcppGL PRIVATE ./)
 
 # Link libraries
 target_link_libraries(fcppGL PRIVATE fcpp)
 
 # Copying shaders and fonts into build
 copyGraphicsFolders(fcppGL $<TARGET_FILE_DIR:fcpp> $<TARGET_FILE_DIR:fcppGL>)
+copyTextureFolder(fcppGL ${PROJECT_SOURCE_DIR} $<TARGET_FILE_DIR:fcppGL>)
 
 # Targets compile options
 target_compile_options(fcpp PUBLIC "-DFCPP_CONFIGURATION=FCPP_CONFIGURATION_DEPENDENT")
