@@ -1,13 +1,6 @@
 # CMake 3.9 or newer
 cmake_minimum_required(VERSION 3.9)
 
-# Defining functions
-function(copyTextureFolder target source dest)
-	add_custom_command(TARGET ${ARGV0} POST_BUILD
-					   COMMAND ${CMAKE_COMMAND} -E copy_directory
-							${ARGV1}/textures/ ${ARGV2}/textures/)
-endfunction()
-
 # Compiling options
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
