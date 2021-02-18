@@ -30,7 +30,7 @@ project(fcppGL
 )
 
 # Executable target
-add_executable(fcppGL ./fcpp/src/test/simulation/displayer.cpp)
+add_executable(fcppGL ./run/displayer.cpp)
 
 # VERSION property
 set_target_properties(fcppGL PROPERTIES VERSION &{PROJECT_VERSION})
