@@ -15,26 +15,29 @@ endif(WIN32)
 # Adding fcpp
 option(FCPP_BUILD_GL "Build OpenGL features." ON) # this tells CMake to compile fcpp's OpenGL features
 add_subdirectory(./fcpp/src/)
-
-# Project name, version and description
-project(fcppGL
-    VERSION 0.1.0
-    DESCRIPTION "FieldCalc++ OpenGL simulator."
-)
-
-# Executable target
-add_executable(fcppGL ./run/displayer.cpp)
-
-# VERSION property
-set_target_properties(fcppGL PROPERTIES VERSION &{PROJECT_VERSION})
-
-# Link libraries
-target_link_libraries(fcppGL PRIVATE fcpp)
-
-# Copying shaders and fonts into build
-copyGraphicsFolders(fcppGL $<TARGET_FILE_DIR:fcpp> $<TARGET_FILE_DIR:fcppGL>)
-copyTextureFolder(fcppGL ${PROJECT_SOURCE_DIR} $<TARGET_FILE_DIR:fcppGL>)
-
-# Targets compile options
 target_compile_options(fcpp PUBLIC "-DFCPP_CONFIGURATION=FCPP_CONFIGURATION_DEPENDENT")
 #target_compile_options(fcpp PUBLIC "-DPROFILER")
+
+# SPREADING COLLECTION
+project(spreading_collection
+    VERSION 0.1.0
+    DESCRIPTION "Simulation of combined spreading and collection blocks."
+)
+add_executable(spreading_collection ./run/spreading_collection.cpp)
+set_target_properties(spreading_collection PROPERTIES VERSION &{PROJECT_VERSION})
+target_link_libraries(spreading_collection PRIVATE fcpp)
+target_include_directories(spreading_collection PRIVATE ./)
+copyGraphicsFolders(spreading_collection $<TARGET_FILE_DIR:fcpp> $<TARGET_FILE_DIR:spreading_collection>)
+copyTextureFolder(spreading_collection ${PROJECT_SOURCE_DIR} $<TARGET_FILE_DIR:spreading_collection>)
+
+# SPREADING COLLECTION
+project(channel_broadcast
+    VERSION 0.1.0
+    DESCRIPTION "Simulation of broadcast through a channel."
+)
+add_executable(channel_broadcast ./run/channel_broadcast.cpp)
+set_target_properties(channel_broadcast PROPERTIES VERSION &{PROJECT_VERSION})
+target_link_libraries(channel_broadcast PRIVATE fcpp)
+target_include_directories(channel_broadcast PRIVATE ./)
+copyGraphicsFolders(channel_broadcast $<TARGET_FILE_DIR:fcpp> $<TARGET_FILE_DIR:channel_broadcast>)
+copyTextureFolder(channel_broadcast ${PROJECT_SOURCE_DIR} $<TARGET_FILE_DIR:channel_broadcast>)
