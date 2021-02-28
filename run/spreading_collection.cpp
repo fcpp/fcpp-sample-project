@@ -134,13 +134,6 @@ DECLARE_OPTIONS(opt,
 
 int main() {
     component::interactive_simulator<opt>::net network{common::make_tagged_tuple<epsilon,texture>(0.1, "fcpp.png")};
-    internal::VertexData v = internal::Shapes()[shape::cube];
-    for (size_t i = 0; i < 4; ++i) std::cerr << v.size[i] << "\t";
-    std::cerr << "\n";
-    for (size_t i = 0; i < v.data.size(); i += 6) {
-        for (int j = 0; j < 6; ++j) std::cerr << v.data[i + j] << "\t";
-        std::cerr << "\n";
-    }
     network.run();
     return 0;
 }
