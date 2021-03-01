@@ -71,10 +71,10 @@ MAIN() {
     node.storage(tags::my_distance{}) = dist;
     node.storage(tags::source_diameter{}) = sdiam;
     node.storage(tags::diameter{}) = diam;
-    node.storage(tags::distance_c{}) = WHITE; //color::hsva(dist*hue_scale, 1, 1);
-    node.storage(tags::source_diameter_c{}) = GREEN; //color::hsva(sdiam*hue_scale, 1, 1);
-    node.storage(tags::diameter_c{}) = RED; //color::hsva(diam*hue_scale, 1, 1);
-    node.storage(tags::node_shape{}) = static_cast<shape>(node.uid % 4);
+    node.storage(tags::distance_c{}) = color::hsva(dist*hue_scale, 1, 1);
+    node.storage(tags::source_diameter_c{}) = color::hsva(sdiam*hue_scale, 1, 1);
+    node.storage(tags::diameter_c{}) = color::hsva(diam*hue_scale, 1, 1);
+    node.storage(tags::node_shape{}) = is_source ? shape::cube : shape::sphere;
 }
 
 }
