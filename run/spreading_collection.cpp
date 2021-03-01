@@ -47,6 +47,8 @@ namespace tags {
     struct diameter_c {};
     //! @brief Size of the current node.
     struct size {};
+    //! @brief Shape of the current node.
+    struct node_shape {};
 }
 
 //! @brief Main function.
@@ -69,9 +71,10 @@ MAIN() {
     node.storage(tags::my_distance{}) = dist;
     node.storage(tags::source_diameter{}) = sdiam;
     node.storage(tags::diameter{}) = diam;
-    node.storage(tags::distance_c{}) = color::hsva(dist*hue_scale, 1, 1);
-    node.storage(tags::source_diameter_c{}) = color::hsva(sdiam*hue_scale, 1, 1);
-    node.storage(tags::diameter_c{}) = color::hsva(diam*hue_scale, 1, 1);
+    node.storage(tags::distance_c{}) = WHITE; //color::hsva(dist*hue_scale, 1, 1);
+    node.storage(tags::source_diameter_c{}) = GREEN; //color::hsva(sdiam*hue_scale, 1, 1);
+    node.storage(tags::diameter_c{}) = RED; //color::hsva(diam*hue_scale, 1, 1);
+    node.storage(tags::node_shape{}) = node.uid % 2 ? shape::cube : shape::tetrahedron;
 }
 
 }
@@ -123,11 +126,13 @@ DECLARE_OPTIONS(opt,
         distance_c,         color,
         source_diameter_c,  color,
         diameter_c,         color,
+        node_shape,         shape,
         size,               double
     >,
     spawn_schedule<sequence::multiple_n<devices, 0>>,
     init<x, rectangle_d>,
     connector<connect::fixed<comm, 1, dim>>,
+    shape_tag<node_shape>,
     size_tag<size>,
     color_tag<distance_c,source_diameter_c,diameter_c>
 );
