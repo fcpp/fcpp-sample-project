@@ -74,7 +74,7 @@ MAIN() {
     node.storage(tags::distance_c{}) = WHITE; //color::hsva(dist*hue_scale, 1, 1);
     node.storage(tags::source_diameter_c{}) = GREEN; //color::hsva(sdiam*hue_scale, 1, 1);
     node.storage(tags::diameter_c{}) = RED; //color::hsva(diam*hue_scale, 1, 1);
-    node.storage(tags::node_shape{}) = node.uid % 2 ? shape::cube : shape::tetrahedron;
+    node.storage(tags::node_shape{}) = shape::cube; //node.uid % 2 ? shape::cube : shape::tetrahedron;
 }
 
 }
