@@ -138,7 +138,7 @@ DECLARE_OPTIONS(opt,
 );
 
 int main() {
-    component::interactive_simulator<opt>::net network{common::make_tagged_tuple<epsilon,texture>(0.1, "fcpp.png")};
+    component::interactive_simulator<opt>::net network{common::make_tagged_tuple<name,epsilon,texture>("Spreading-Collection Composition",0.1, "fcpp.png")};
     network.run();
     return 0;
 }
