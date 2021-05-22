@@ -60,13 +60,13 @@ exit
 In order to get started on your machine you need the following installed:
 
 - [Bazel](https://bazel.build) (tested with version 2.1.0)
-- [GCC](https://gcc.gnu.org) (tested with version 9.3.0)
+- [GCC](https://gcc.gnu.org) (tested with version 9.2.0) or [Clang](https://clang.llvm.org) (tested with Apple Clang 12.0.5)
 
-Once you have them installed, you should be able to run `./make.sh gcc run -O runner`, getting output about building the experiments and running them.
+Once you have them installed, you should be able to run `./make.sh run -O runner`, getting output about building the experiments and running them.
 
 ## Graphical Simulation
 
-The OpenGL-based graphical simulations can only be run through the [CMake](https://cmake.org) build system in the native OS. Common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL, hence running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Execution instructions follow for the various supported OSs, followed by a description of the two demo scenarios and their user interface.
+The OpenGL-based graphical simulations can only be built through the [CMake](https://cmake.org) build system in the native OS. Common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL, hence running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Execution instructions follow for the various supported OSs, followed by a description of the two demo scenarios and their user interface.
 
 ### Windows
 
@@ -101,7 +101,7 @@ sudo apt-get install xorg-dev g++ cmake asymptote
 ```
 Then, type the following command in a terminal:
 ```
-> ./make.sh unix [target...]
+> ./make.sh gui unix [target...]
 ```
 where `[target...]` are among the two described in the *Demo Scenarios* subsection (if present). You should see output about building the executables, then the graphical simulation should pop up.
 
@@ -119,7 +119,7 @@ brew install cmake asymptote
 ```
 Then, type the following command in a terminal:
 ```
-> ./make.sh unix [target...]
+> ./make.sh gui unix [target...]
 ```
 where `[target...]` are among the two described in the *Demo Scenarios* subsection (if present). You should see output about building the executables, then the graphical simulation should pop up.
 

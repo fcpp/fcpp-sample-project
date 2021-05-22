@@ -14,7 +14,7 @@ function usage() {
     echo -e "       <pattern> [replace]"
     echo -e "    \033[1mdoc\033[0m:                             builds the documentation (can be chained)"
     echo -e "    \033[1mgui\033[0m:                             builds graphical simulations (platform can be unix or windows)"
-    echo -e "       <platform> <targets...>"
+    echo -e "       [-g] <platform> <targets...>"
     echo -e "    \033[1mbuild\033[0m:                           builds binaries for given targets, skipping tests"
     echo -e "       <copts...> <targets...>"
     echo -e "    \033[1mtest\033[0m:                            builds binaries and tests for given targets"
@@ -133,7 +133,7 @@ function filter() {
         else
             name=""
         fi
-        if [ -f $build -a `cat $build | tr -s ' \n' ' ' | grep "$rule( name = $name" | wc -l` -gt 0 ]; then
+        if [ -f $build -a `cat $build | tr -s ' \r\n' ' ' | grep "$rule( name = $name" | wc -l` -gt 0 ]; then
             echo -n "$target "
         fi
     done
@@ -198,9 +198,14 @@ while [ "$1" != "" ]; do
         pattern="$2"
         replace=""
         videoreplace=`echo -e "\033[7m&\033[0m"`
+        replacing=0
         shift 2
         if [ "$1" != "" -a `echo $1 | grep "clean\|here\|gcc\|sed\|doc\|build\|test\|run\|all" | wc -l` -eq 0 ]; then
             replace="$1"
+            if [ "$replace" == "del" ]; then
+                replace=""
+            fi
+            replacing=1
             videoreplace=`echo -e "\033[31m[-&-]\033[32m{+$replace+}\033[0m"`
             shift 1
         fi
@@ -224,7 +229,7 @@ while [ "$1" != "" ]; do
             done
         done
         echo "$totn occurrences found across $totf files."
-        if [ "$replace" != "" ]; then
+        if [ $replacing -eq 1 ]; then
             echo -n "Proceed with substitution? (y/N) "
             read x
             if [ "$x" == "y" ]; then
@@ -242,6 +247,11 @@ while [ "$1" != "" ]; do
         mkdoc
     elif [ "$1" == "gui" ]; then
         shift 1
+        btype="Release"
+        if [ "$1" == "-g" ]; then
+            btype="Debug"
+            shift 1
+        fi
         platform=$1
         if [ "$platform" == windows ]; then
             flag=MinGW
@@ -253,7 +263,9 @@ while [ "$1" != "" ]; do
             exit 1
         fi
         shift 1
-        cmake -S ./ -B ./bin -G "$flag Makefiles" -DCMAKE_BUILD_TYPE=Release -Wno-dev
+        echo -e "\033[4mcmake -S ./ -B ./bin -G \"$flag Makefiles\" -DCMAKE_BUILD_TYPE=$btype -Wno-dev\033[0m"
+        cmake -S ./ -B ./bin -G "$flag Makefiles" -DCMAKE_BUILD_TYPE=$btype -Wno-dev
+        echo -e "\033[4mcmake --build ./bin/\033[0m"
         cmake --build ./bin/
         if [ "$platform" == windows ]; then
             cp bin/fcpp/src/libfcpp.dll bin/
