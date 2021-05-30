@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.9)
 # Compiling options
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -DNDEBUG -march=native")
+set(CMAKE_CXX_FLAGS_DEBUG   "${CMAKE_CXX_FLAGS_DEBUG}   -g")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3 -DNDEBUG -march=native")
 if(WIN32)
 set(CMAKE_FIND_LIBRARY_SUFFIXES ".a")
 set(BUILD_SHARED_LIBS OFF)
@@ -15,6 +15,7 @@ endif(WIN32)
 # Adding fcpp
 option(FCPP_BUILD_GL "Build OpenGL features." ON) # this tells CMake to compile fcpp's OpenGL features
 add_subdirectory(./fcpp/src/)
+add_compile_options("-DFCPP_GUI")
 target_compile_options(fcpp PUBLIC "-DFCPP_CONFIGURATION=FCPP_CONFIGURATION_DEPENDENT")
 #target_compile_options(fcpp PUBLIC "-DPROFILER")
 
