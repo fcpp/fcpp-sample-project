@@ -1,7 +1,6 @@
-// Copyright © 2020 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
 
 #include "lib/fcpp.hpp"
-//#include "lib/simulation/displayer.hpp"
 
 #define EXAMPLE_3D
 
@@ -20,7 +19,6 @@ constexpr size_t devices = 1000;
 constexpr size_t comm = 100;
 constexpr size_t side = discrete_sqrt(devices * 3000);
 constexpr size_t height = 100;
-
 constexpr float hue_scale = 360.0f/(side+height);
 
 
@@ -78,19 +76,6 @@ MAIN() {
 }
 
 }
-
-
-////! @brief Namespace for all FCPP components.
-//namespace component {
-//
-///**
-// * @brief Combination of components for interactive simulations.
-// *
-// * It can be instantiated as `interactive_simulator<options...>::net`.
-// */
-//DECLARE_COMBINE(interactive_simulator, displayer, calculus, simulated_connector, simulated_positioner, timer, scheduler, logger, storage, spawner, identifier, randomizer);
-//
-//}
 
 }
 
