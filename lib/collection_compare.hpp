@@ -1,17 +1,16 @@
-// Copyright © 2020 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
 
 /**
  * @file collection_compare.hpp
- * @brief Implementation of the case study comparing collection algorithms.
+ * @brief Performance comparison of collection algorithms.
  */
 
 #ifndef FCPP_COLLECTION_COMPARE_H_
 #define FCPP_COLLECTION_COMPARE_H_
 
 #include "lib/beautify.hpp"
-#include "lib/coordination/collection.hpp"
-#include "lib/coordination/geometry.hpp"
-#include "lib/coordination/spreading.hpp"
+#include "lib/coordination.hpp"
+#include "lib/data.hpp"
 
 
 /**

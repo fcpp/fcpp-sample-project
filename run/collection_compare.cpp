@@ -1,7 +1,6 @@
-// Copyright © 2020 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
 
 #include "lib/fcpp.hpp"
-
 #include "lib/collection_compare.hpp"
 
 using namespace fcpp;
