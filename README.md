@@ -1,7 +1,7 @@
 # FCPP Sample Project
 
 Sample project provided with the FCPP distribution, designed to help setup of FCPP-based projects.
-This project consists of two different parts: a *batch* simulation and a *graphical* simulation.
+This project consists of both *batch* and *graphical* simulations.
 
 The first is a translation in FCPP of the experiments in [this repository](https://bitbucket.org/Harniver/aamas19-summarising), presented at [AAMAS 2019](http://aamas2019.encs.concordia.ca), which compare the performance of existing self-stabilising collection algorithms. This translation has been presented and evaluated at [ACSOS 2020](https://conf.researchr.org/home/acsos-2020) through [this paper](http://giorgio.audrito.info/static/fcpp.pdf).
 
@@ -27,7 +27,7 @@ Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), th
 vagrant up
 vagrant ssh
 cd fcpp
-./make.sh run -O runner
+./make.sh run -O collection_compare
 ```
 Then you should get output about building the experiments and running them (in the Vagrant virtual machine). After that you can exit and stop the virtual machine through:
 ```
@@ -48,7 +48,7 @@ docker build -t docker.pkg.github.com/fcpp/fcpp/container:1.0 .
 Once you have the Docker container locally available, type the following commands:
 ```
 docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fcpp/container:1.0 bash
-./make.sh run -O runner
+./make.sh run -O collection_compare
 ```
 Then you should get output about building the experiments and running them (in the Docker container). After that you can exit and stop the container through:
 ```
@@ -62,7 +62,7 @@ In order to get started on your machine you need the following installed:
 - [Bazel](https://bazel.build) (tested with version 2.1.0)
 - [GCC](https://gcc.gnu.org) (tested with version 9.2.0) or [Clang](https://clang.llvm.org) (tested with Apple Clang 12.0.5)
 
-Once you have them installed, you should be able to run `./make.sh run -O runner`, getting output about building the experiments and running them.
+Once you have them installed, you should be able to run `./make.sh run -O collection_compare`, getting output about building the experiments and running them.
 
 ## Graphical Simulation
 
