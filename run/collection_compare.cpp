@@ -22,6 +22,8 @@ using export_s = sequence::periodic_n<1, 0, 10, END_TIME>;
 using rectangle_d = distribution::rect_n<1, 0, 0, MAXX, MAXY>;
 
 DECLARE_OPTIONS(opt,
+    parallel<true>,
+    synchronised<false>,
     program<coordination::main>,
     round_schedule<round_s>,
     exports<
@@ -59,6 +61,7 @@ DECLARE_OPTIONS(opt,
 );
 
 int main() {
-    batch::run(component::batch_simulator<opt>{});
+    component::batch_simulator<opt>::net network{common::make_tagged_tuple<epsilon>(0.1)};
+    network.run();
     return 0;
 }
