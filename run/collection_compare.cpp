@@ -15,7 +15,11 @@ using namespace coordination::tags;
 
 using spawn_s = sequence::multiple_n<DEVICE_NUM, 0>;
 
-using round_s = sequence::periodic<distribution::interval_n<times_t, 0, 1>, distribution::weibull_n<times_t, 100, 25, 100>, distribution::constant_n<times_t, END_TIME+2>>;
+using round_s = sequence::periodic<
+    distribution::interval_n<times_t, 0, 1>,
+    distribution::weibull_n<times_t, 100, 25, 100>,
+    distribution::constant_n<times_t, END_TIME+2>
+>;
 
 using export_s = sequence::periodic_n<1, 0, 10, END_TIME>;
 
