@@ -36,6 +36,9 @@ namespace tags {
 
     //! @brief Size of the current node.
     struct size {};
+
+//! @brief Shape of the current node.
+    struct node_shape {};
 }
 
 
@@ -48,6 +51,7 @@ FUN bool channel(ARGS, bool source, bool dest, double width) { CODE
     bool c = ds + dd < broadcast(CALL, ds, dd) + width;
     c = c or source or dest;
     node.storage(tags::distance_c{}) = c ? color::hsva(min(ds,dd)*hue_scale, 1, 1) : color();
+    node.storage(tags::node_shape{}) = source or dest ? shape::tetrahedron : c ? shape::icosahedron : shape::sphere;
     return c;
 }
 

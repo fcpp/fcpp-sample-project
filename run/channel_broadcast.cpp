@@ -28,14 +28,15 @@ DECLARE_OPTIONS(opt,
         source_distance,    double,
         dest_distance,      double,
         distance_c,         color,
-        size,               double
+        size,               double,
+        node_shape,         shape
     >,
     spawn_schedule<sequence::multiple_n<devices, 0>>,
     init<x, rectangle_d>,
     connector<connect::fixed<comm, 1, dim>>,
     size_tag<size>,
     color_tag<distance_c>,
-    shape_val<(size_t)shape::sphere>
+    shape_tag<node_shape>
 );
 
 int main() {
