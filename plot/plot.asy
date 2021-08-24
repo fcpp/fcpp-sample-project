@@ -7,6 +7,7 @@ int  ROWS = 2;       // rows of plots per page
 int  COLS = 3;       // columns of plots per page
 real MAX_CROP = 1.1; // maximum cropping allowed (usually 1.3)
 real LOG_LIN = 2;    // factor of comparison between linear and logarithmic plots
+bool LEGENDA = true; // whether to draw the legenda or not
 
 // line styles and colors
 pen[] styles = {solid+1, linetype(new real[] {10,5})+1, linetype(new real[] {6,3,0.5,3})+1, linetype(new real[] {1,2.5})+1};
@@ -136,13 +137,13 @@ picture plot(real endx = 0, string ppath, string title, string xlabel, string yl
         }
         for (int l=valy.length-1; MAX_CROP*l >= valy.length; --l)
             for (int i=0; i+l < valy.length; ++i)
-                if (valy[i] != nan && area(lminy, lmaxy) < area(i, i+l)) {
+                if (!isnan(valy[i]) && area(lminy, lmaxy) < area(i, i+l)) {
                     lminy = i;
                     lmaxy = i+l;
                 }
         for (int l=valy.length-1; MAX_CROP*l >= valy.length; --l)
             for (int i=0; i+l < valy.length; ++i)
-                if (valy[i] != nan && 0.9 * area(lminy, lmaxy) < area(i, i+l)) {
+                if (!isnan(valy[i]) && 0.9 * area(lminy, lmaxy) < area(i, i+l)) {
                     lminy = i;
                     lmaxy = i+l;
                     i = valy.length;
@@ -150,13 +151,19 @@ picture plot(real endx = 0, string ppath, string title, string xlabel, string yl
                 }
     // compare and choose the final plot window
         logmode = area(lminy, lmaxy) > besta * LOG_LIN;
-        if (logmode) {
-            bminy = valy[lminy]*0.999;
-            bmaxy = valy[lmaxy]*1.001;
+        if (MAX_CROP == 0) {
+            bminy = lvaly[0]*0.999;
+            bmaxy = lvaly[lvaly.length-1]*1.001;
+        } else if (logmode) {
+            bminy = valy[lminy];
+            bmaxy = valy[lmaxy];
         } else {
-            bminy = lvaly[iminy]*0.999;
-            bmaxy = lvaly[imaxy]*1.001;
+            bminy = lvaly[iminy];
+            bmaxy = lvaly[imaxy];
         }
+        real diff = (bmaxy-bminy)/100;
+        bminy -= diff;
+        bmaxy += diff;
         write(title + " linear: " + string(round(10000*besta)/100) + "% log: " + string(round(10000*area(lminy, lmaxy))/100) + "% (I choose " + (logmode ? "log)" : "lin)"));
     }
     if (bminy == bmaxy) {
@@ -220,13 +227,67 @@ picture plot(real endx = 0, string ppath, string title, string xlabel, string yl
         string s = string(rys);
         label(pic, scale(0.5)*(logmode ? "$10^{"+s+"}$" : s), (0,ry), align=W);
     }
-    for (int i=0; i<names.length; i+=2) {
-        draw(pic, (0,-0.5-i/8) -- (0.8,-0.5-i/8), styles[i%styles.length]+colors[i%colors.length]);
-        label(pic, scale(0.5)*(names[i]+"\phantom{pd}"), (0.9,-0.5-i/8), align=E);
-        if (i+1 < names.length) {
-            draw(pic, (DIM.x/2+0.5,-0.5-i/8) -- (DIM.x/2+1.3,-0.5-i/8), styles[(i+1)%styles.length]+colors[(i+1)%colors.length]);
-            label(pic, scale(0.5)*(names[i+1]+"\phantom{pd}"), (DIM.x/2+1.4,-0.5-i/8), align=E);
+    int common_suffix = rfind(names[0], " ");
+    string append_suffix = "";
+    if (common_suffix > 0) {
+        string suffix = substr(names[0], common_suffix);
+        common_suffix = length(names[0]) - common_suffix;
+        for (int i=1; i<names.length; ++i)
+            if (substr(names[i], length(names[i])-common_suffix) != suffix) {
+                common_suffix = 0;
+                break;
+            }
+    }
+    if (common_suffix == 0) {
+        common_suffix = rfind(names[0], "-");
+        append_suffix = ")";
+        if (common_suffix > 0) {
+            string suffix = substr(names[0], common_suffix);
+            common_suffix = length(names[0]) - common_suffix;
+            for (int i=1; i<names.length; ++i)
+                if (substr(names[i], length(names[i])-common_suffix) != suffix) {
+                    common_suffix = 0;
+                    break;
+                }
         }
+    }
+    for (int i=0; i<names.length; ++i) {
+        if (common_suffix > 0) {
+            names[i] = substr(names[i], 0, length(names[i])-common_suffix) + append_suffix;
+        }
+        for (int j=0; j<10; ++j)
+            names[i] = replace(names[i], "<"+string(j)+">", " "+string(j));
+    }
+    Label adapt_label(string text, real maxscale, real maxlength) {
+        picture pp;
+        unitsize(pp, 1cm);
+        label(pp, scale(maxscale)*text, (0,0));
+        real len = size(pp, true).x;
+        if (len > maxlength) maxscale *= maxlength / len;
+        return scale(maxscale) * (text + "\phantom{pd}");
+    }
+    if (LEGENDA) {
+        for (int i=0; i<names.length; i+=2) {
+            draw(pic, (0,-0.5-i/8) -- (0.8,-0.5-i/8), styles[i%styles.length]+colors[i%colors.length]);
+            label(pic, adapt_label(names[i], 0.5, DIM.x/2 - 0.5), (0.9,-0.5-i/8), align=E);
+            if (i+1 < names.length) {
+                draw(pic, (DIM.x/2+0.5,-0.5-i/8) -- (DIM.x/2+1.3,-0.5-i/8), styles[(i+1)%styles.length]+colors[(i+1)%colors.length]);
+                label(pic, adapt_label(names[i+1], 0.5, DIM.x/2 - 0.5), (DIM.x/2+1.4,-0.5-i/8), align=E);
+            }
+        }
+    } else {
+        picture pp;
+        unitsize(pp, 1cm);
+        int k=0;
+        for (int i=0; i<names.length; ++i) {
+            if (names[i] == "") {
+                ++k;
+                continue;
+            }
+            draw(pp, (2.4*(i-k),-0.5) -- (2.4*(i-k)+0.8,-0.5), styles[i%styles.length]+colors[i%colors.length]);
+            label(pp, adapt_label(names[i], 0.5, DIM.x/2 - 0.5), (2.4*(i-k)+0.9,-0.5), align=E);
+        }
+        shipout(ppath+"-legenda", pp);
     }
     if (length(ppath) > 0) shipout(ppath, pic);
     return pic;

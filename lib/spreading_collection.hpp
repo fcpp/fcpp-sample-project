@@ -177,8 +177,8 @@ using aggregator_t = aggregators<
 using row_aggregator_t = common::type_sequence<aggregator::mean<double>>;
 //! @brief The logged values to be shown in plots as lines (true_distance, diameter).
 using points_t = plot::values<aggregator_t, row_aggregator_t, true_distance, diameter>;
-//! @brief A plot of the logged values by time for speed = 30 (intermediate speed).
-using time_plot_t = plot::split<plot::time, plot::filter<speed, filter::equal<30>, points_t>>;
+//! @brief A plot of the logged values by time for speed = 50 (intermediate speed).
+using time_plot_t = plot::split<plot::time, plot::filter<speed, filter::equal<comm/4>, points_t>>;
 //! @brief A plot of the logged values by speed for times >= 50 (after the first source switch).
 using speed_plot_t = plot::split<speed, plot::filter<plot::time, filter::above<50>, points_t>>;
 //! @brief Combining the two plots into a single row.
