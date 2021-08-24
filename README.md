@@ -25,49 +25,14 @@ For any issues with reproducing the experiments, please contact [Giorgio Audrito
 
 ## Setup
 
-The next sections contain the setup instructions for the various supported OSs, based on the CMake build system.
+The next sections contain the setup instructions for the various supported OSs, based on the CMake build system. Jump to the section dedicated to your system of choice and ignore the others.
 For backward compatibility (and faster testing), the Bazel build system is also supported but not recommended: in particular, the OpenGL graphical user interface is not available with Bazel. In order to use Bazel instead of CMake for building, substitute `./make.sh bazel` for `./make.sh` in the commands below.
-
-**Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Docker container to this aim is provided for convenience.
-
-### Vagrant
-
-Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), then type the following commands in a terminal to enter the Vagrant VM:
-```
-vagrant up
-vagrant ssh
-cd fcpp
-```
-and the following commands to exit it:
-```
-exit
-vagrant halt
-```
-
-### Docker
-
-Download Docker from [https://www.docker.com](https://www.docker.com), then you can download the Docker container from GitHub by typing the following command in a terminal:
-```
-docker pull docker.pkg.github.com/fcpp/fcpp/container:1.0
-```
-Alternatively, you can build the container yourself with the following command:
-```
-docker build -t docker.pkg.github.com/fcpp/fcpp/container:1.0 .
-```
-Once you have the Docker container locally available, type the following command to enter the container:
-```
-docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fcpp/container:1.0 bash
-```
-and the following command to exit it:
-```
-exit
-```
 
 ### Windows
 
 Pre-requisites:
 - [Git Bash](https://gitforwindows.org) (for issuing unix-style commands)
-- [MinGW-w64 builds 8.1.0](http://mingw-w64.org/doku.php/download/mingw-builds)
+- [MinGW-w64](http://mingw-w64.org) ([builds 8.1.0](http://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/installer/mingw-w64-install.exe/download))
 - [CMake 3.9](https://cmake.org) (or higher)
 - [Asymptote](http://asymptote.sourceforge.io) (for building the plots)
 
@@ -102,6 +67,43 @@ To install them, assuming you have the [brew](https://brew.sh) package manager, 
 ```
 xcode-select --install
 brew install cmake asymptote
+```
+
+### Vagrant VM
+
+**Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Docker container to this aim is provided for convenience.
+
+Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), then type the following commands in a terminal to enter the Vagrant VM:
+```
+vagrant up
+vagrant ssh
+cd fcpp
+```
+and the following commands to exit it:
+```
+exit
+vagrant halt
+```
+
+### Docker VM
+
+**Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Docker container to this aim is provided for convenience.
+
+Download Docker from [https://www.docker.com](https://www.docker.com), then you can download the Docker container from GitHub by typing the following command in a terminal:
+```
+docker pull docker.pkg.github.com/fcpp/fcpp/container:1.0
+```
+Alternatively, you can build the container yourself with the following command:
+```
+docker build -t docker.pkg.github.com/fcpp/fcpp/container:1.0 .
+```
+Once you have the Docker container locally available, type the following command to enter the container:
+```
+docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fcpp/container:1.0 bash
+```
+and the following command to exit it:
+```
+exit
 ```
 
 
