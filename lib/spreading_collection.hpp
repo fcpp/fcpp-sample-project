@@ -29,25 +29,18 @@ constexpr size_t discrete_sqrt(size_t n) {
     }
     return lo;
 }
-
 //! @brief The final simulation time.
 constexpr size_t end_time = 300;
-
 //! @brief Number of devices.
 constexpr size_t devices = 1000;
-
 //! @brief Communication radius.
 constexpr size_t comm = 100;
-
 //! @brief Dimensionality of the space.
 constexpr size_t dim = 3;
-
 //! @brief Side of the deployment area.
 constexpr size_t side = discrete_sqrt(devices * 3000);
-
 //! @brief Height of the deployment area.
 constexpr size_t height = 100;
-
 //! @brief Color hue scale.
 constexpr float hue_scale = 360.0f/(side+height);
 
@@ -60,31 +53,22 @@ namespace coordination {
 namespace tags {
     //! @brief The device movement speed.
     struct speed {};
-
     //! @brief True distance of the current node from the source.
     struct true_distance {};
-
     //! @brief Computed distance of the current node from the source.
     struct calc_distance {};
-
     //! @brief Diameter of the network (in the source).
     struct source_diameter {};
-
     //! @brief Diameter of the network (in every node).
     struct diameter {};
-
     //! @brief Color representing the distance of the current node.
     struct distance_c {};
-
     //! @brief Color representing the diameter of the network (in the source).
     struct source_diameter_c {};
-
     //! @brief Color representing the diameter of the network (in every node).
     struct diameter_c {};
-
     //! @brief Size of the current node.
     struct node_size {};
-
     //! @brief Shape of the current node.
     struct node_shape {};
 }
@@ -129,6 +113,7 @@ MAIN() {
     node.storage(tags::calc_distance{})     = dist;
     node.storage(tags::source_diameter{})   = sdiam;
     node.storage(tags::diameter{})          = diam;
+    // store colors, using the values to regulate hue (with full saturation and value)
     node.storage(tags::distance_c{})        = color::hsva(dist *hue_scale, 1, 1);
     node.storage(tags::source_diameter_c{}) = color::hsva(sdiam*hue_scale, 1, 1);
     node.storage(tags::diameter_c{})        = color::hsva(diam *hue_scale, 1, 1);
@@ -137,11 +122,18 @@ MAIN() {
 FUN_EXPORT main_t = common::export_list<rectangle_walk_t<3>, select_source_t, abf_distance_t, mp_collection_t<double, double>, broadcast_t<double, double>>;
 
 
-}
+} // namespace coordination
 
 
+//! @brief Namespace for component options.
+namespace option {
+
+
+//! @brief Import tags to be used for component options.
 using namespace component::tags;
+//! @brief Import tags used by aggregate functions.
 using namespace coordination::tags;
+
 
 //! @brief The randomised sequence of rounds for every node (about one every second, with 10% variance).
 using round_s = sequence::periodic<
@@ -190,8 +182,9 @@ using speed_plot_t = plot::split<speed, plot::filter<plot::time, filter::above<5
 //! @brief Combining the two plots into a single row.
 using plot_t = plot::join<time_plot_t, speed_plot_t>;
 
+
 //! @brief The general simulation options.
-DECLARE_OPTIONS(opt,
+DECLARE_OPTIONS(list,
     parallel<false>,     // no multithreading on node rounds
     synchronised<false>, // optimise for asynchronous networks
     program<coordination::main>,   // program to be run (refers to MAIN above)
@@ -215,6 +208,10 @@ DECLARE_OPTIONS(opt,
 );
 
 
-}
+} // namespace opt
+
+
+} // namespace fcpp
+
 
 #endif // FCPP_SPREADING_COLLECTION_H_

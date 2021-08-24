@@ -11,13 +11,39 @@
 #include "lib/beautify.hpp"
 #include "lib/coordination.hpp"
 #include "lib/data.hpp"
-#include "lib/simulation_setup.hpp"
 
 
 /**
  * @brief Namespace containing all the objects in the FCPP library.
  */
 namespace fcpp {
+
+
+//! @brief Minimum number whose square is at least n.
+constexpr size_t discrete_sqrt(size_t n) {
+    size_t lo = 0, hi = n, mid = 0;
+    while (lo < hi) {
+        mid = (lo + hi)/2;
+        if (mid*mid < n) lo = mid+1;
+        else hi = mid;
+    }
+    return lo;
+}
+
+//! @brief Number of devices.
+constexpr size_t devices = 1000;
+
+//! @brief Communication radius.
+constexpr size_t comm = 100;
+
+//! @brief Side of the deployment area.
+constexpr size_t side = discrete_sqrt(devices * 3000);
+
+//! @brief Height of the deployment area.
+constexpr size_t height = 100;
+
+//! @brief Color hue scale.
+constexpr float hue_scale = 360.0f/(side+height);
 
 
 //! @brief Namespace containing the libraries of coordination routines.
