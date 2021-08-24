@@ -109,7 +109,7 @@ exit
 
 ## Execution
 
-In order to execute the simulations, type one of the following command in a terminal:
+In order to execute the simulations, type the following command in a terminal:
 ```
 > ./make.sh [gui] run -O [targets...]
 ```
@@ -126,7 +126,7 @@ Running the above command, you should see output about building the executables 
 
 ### Graphical User Interface
 
-Executing a graphical simulation will open a window displaying the simulation scenario, initially still: you can start running the simulation by pressing `P` (current simulated time is displayed in the bottom-left corner). While the simulation is running, network statistics will be periodically printed in the console. You can interact with the simulation through the following keys:
+Executing a graphical simulation will open a window displaying the simulation scenario, initially still: you can start running the simulation by pressing `P` (current simulated time is displayed in the bottom-left corner). While the simulation is running, network statistics may be periodically printed in the console, and be possibly aggregated in form of an Asymptote plot at simulation end. You can interact with the simulation through the following keys:
 - `Esc` to end the simulation
 - `P` to stop/resume
 - `O`/`I` to speed-up/slow-down simulated time
@@ -140,3 +140,4 @@ Executing a graphical simulation will open a window displaying the simulation sc
 - `mouse scroll` for zooming in and out
 - `left-shift` added to the camera commands above for precision control
 - any other key will show/hide a legenda displaying this list
+Hovering on a node will also display its UID in the top-left corner.
