@@ -151,7 +151,7 @@ using spawn_s = sequence::multiple_n<devices, 0>;
 using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side, height>;
 //! @brief The distribution of node speeds (all equal to a fixed value).
 using speed_d = distribution::constant_i<double, speed>;
-//! @brief The contents of the node storage.
+//! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
     speed,              double,
     true_distance,      double,
@@ -210,7 +210,7 @@ DECLARE_OPTIONS(list,
 );
 
 
-} // namespace opt
+} // namespace option
 
 
 } // namespace fcpp
