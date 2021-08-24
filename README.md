@@ -25,7 +25,7 @@ For any issues with reproducing the experiments, please contact [Giorgio Audrito
 
 ## Setup
 
-The next sections contain the setup instructions for the various supported OSs, based on the CMake build system. Jump to the section dedicated to your system of choice and ignore the others.
+The next sections contain the setup instructions based on the CMake build system for the various supported OSs and virtual containers. Jump to the section dedicated to your system of choice and ignore the others.
 For backward compatibility (and faster testing), the Bazel build system is also supported but not recommended: in particular, the OpenGL graphical user interface is not available with Bazel. In order to use Bazel instead of CMake for building, substitute `./make.sh bazel` for `./make.sh` in the commands below.
 
 ### Windows
@@ -69,23 +69,7 @@ xcode-select --install
 brew install cmake asymptote
 ```
 
-### Vagrant VM
-
-**Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Docker container to this aim is provided for convenience.
-
-Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), then type the following commands in a terminal to enter the Vagrant VM:
-```
-vagrant up
-vagrant ssh
-cd fcpp
-```
-and the following commands to exit it:
-```
-exit
-vagrant halt
-```
-
-### Docker VM
+### Docker container
 
 **Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Docker container to this aim is provided for convenience.
 
@@ -104,6 +88,23 @@ docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fc
 and the following command to exit it:
 ```
 exit
+```
+In order to properly link the executables in Docker, you may need to add the `-pthread` option (substitute `-O` for `-O -pthread` below).
+
+### Vagrant container
+
+**Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Vagrant container to this aim is provided for convenience.
+
+Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com) and VirtualBox from [https://www.virtualbox.org](https://www.virtualbox.org), then type the following commands in a terminal to enter the Vagrant container:
+```
+vagrant up
+vagrant ssh
+cd fcpp
+```
+and the following commands to exit it:
+```
+exit
+vagrant halt
 ```
 
 
