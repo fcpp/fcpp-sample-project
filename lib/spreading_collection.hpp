@@ -80,7 +80,9 @@ FUN bool select_source(ARGS, int step) { CODE
     device_t source_id = ((int)node.current_time()) / step;
     bool is_source = node.uid == source_id;
     // retrieves from the net object the current true position of the source
-    vec<3> source_pos = node.net.node_at(source_id).position(node.current_time());
+    vec<3> source_pos = node.position();
+    if (node.net.node_count(source_id))
+        source_pos = node.net.node_at(source_id).position(node.current_time());
     // store relevant values in the node storage
     node.storage(tags::true_distance{})     = distance(node.position(), source_pos);
     node.storage(tags::node_size{})         = is_source ? 20 : 10;
