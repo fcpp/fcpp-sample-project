@@ -5,8 +5,7 @@ cc_library(
     deps = [
         "@fcpp//lib:beautify",
         "@fcpp//lib:coordination",
-        "@fcpp//lib:data",
-        "//lib:simulation_setup",
+        "@fcpp//lib:data"
     ],
     visibility = [
         '//visibility:public',
@@ -28,23 +27,11 @@ cc_library(
 )
 
 cc_library(
-    name = "simulation_setup",
-    hdrs = ["simulation_setup.hpp"],
-    srcs = ['simulation_setup.cpp'],
-    visibility = [
-        '//visibility:public',
-    ],
-)
-
-cc_library(
     name = "spreading_collection",
     hdrs = ["spreading_collection.hpp"],
     srcs = ['spreading_collection.cpp'],
     deps = [
-        "@fcpp//lib:beautify",
-        "@fcpp//lib:coordination",
-        "@fcpp//lib:data",
-        "//lib:simulation_setup",
+        "@fcpp//lib:fcpp"
     ],
     visibility = [
         '//visibility:public',

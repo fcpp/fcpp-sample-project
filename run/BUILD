@@ -17,10 +17,25 @@ cc_binary(
 )
 
 cc_binary(
-    name = "spreading_collection",
-    srcs = ["spreading_collection.cpp"],
+    name = "spreading_collection_batch",
+    srcs = ["spreading_collection_batch.cpp"],
     deps = [
-        "@fcpp//lib:fcpp",
+        "//lib:spreading_collection",
+    ],
+)
+
+cc_binary(
+    name = "spreading_collection_gui",
+    srcs = ["spreading_collection_gui.cpp"],
+    deps = [
+        "//lib:spreading_collection",
+    ],
+)
+
+cc_binary(
+    name = "spreading_collection_run",
+    srcs = ["spreading_collection_run.cpp"],
+    deps = [
         "//lib:spreading_collection",
     ],
 )
