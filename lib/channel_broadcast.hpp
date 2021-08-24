@@ -51,6 +51,9 @@ namespace coordination {
 
 
 namespace tags {
+    //! @brief Whether the node is in the channel.
+    struct in_channel {};
+
     //! @brief Distance to the source node.
     struct source_distance {};
 
@@ -76,10 +79,12 @@ FUN bool channel(ARGS, bool source, bool dest, double width) { CODE
     node.storage(tags::dest_distance{}) = dd;
     bool c = ds + dd < broadcast(CALL, ds, dd) + width;
     c = c or source or dest;
+    node.storage(tags::in_channel{}) = c;
     node.storage(tags::distance_c{}) = c ? color::hsva(min(ds,dd)*hue_scale, 1, 1) : color();
     node.storage(tags::node_shape{}) = source or dest ? shape::tetrahedron : c ? shape::icosahedron : shape::sphere;
     return c;
 }
+FUN_EXPORT channel_t = common::export_list<bis_distance_t, broadcast_t<double, double>>;
 
 //! @brief Main function.
 MAIN() {
@@ -91,6 +96,7 @@ MAIN() {
     channel(CALL, is_src, is_dst, 20);
     node.storage(tags::size{}) = is_src or is_dst ? 30 : 10;
 }
+FUN_EXPORT main_t = common::export_list<rectangle_walk_t<3>, channel_t>;
 
 
 }

@@ -48,6 +48,7 @@ FUN double generic_distance(ARGS, int algorithm, bool source) { CODE
     if (algorithm == 2) return flex_distance(CALL, source, 0.2, 100.0, 0.1, 10);
     return 0;
 }
+FUN_EXPORT generic_distance_t = common::export_list<abf_distance_t, bis_distance_t, flex_distance_t>;
 
 //! @brief Device counting case study.
 FUN void device_counting(ARGS, bool is_source, double dist) { CODE
@@ -68,10 +69,14 @@ FUN void device_counting(ARGS, bool is_source, double dist) { CODE
     node.storage(tags::wmpc_sum{}) = is_source ? wmpc : 0;
     node.storage(tags::ideal_sum{}) = 1.0;
 }
+FUN_EXPORT device_counting_t = common::export_list<sp_collection_t<double, double>, mp_collection_t<double, double>, wmp_collection_t<double>>;
 
 //! @brief Progress tracking case study.
 FUN void progress_tracking(ARGS, bool is_source, device_t source_id, double dist) { CODE
-    double value = distance(node.net.node_at(source_id).position(), node.position()) + (500 - node.current_time());
+    vec<2> source_pos = node.position();
+    if (node.net.node_count(source_id))
+        source_pos = node.net.node_at(source_id).position(node.current_time());
+    double value = distance(node.position(), source_pos) + (500 - node.current_time());
     double threshold = 3.5 / count_hood(CALL);
     
     auto adder = [](double x, double y) {
@@ -91,6 +96,7 @@ FUN void progress_tracking(ARGS, bool is_source, device_t source_id, double dist
     node.storage(tags::wmpc_max{}) = is_source ? wmpc : 0;
     node.storage(tags::ideal_max{}) = value;
 }
+FUN_EXPORT progress_tracking_t = common::export_list<sp_collection_t<double, double>, mp_collection_t<double, double>, wmp_collection_t<double>>;
 
 //! @brief Main function.
 MAIN() {
@@ -104,6 +110,7 @@ MAIN() {
     device_counting(CALL, is_source, dist);
     progress_tracking(CALL, is_source, source_id, dist);
 }
+FUN_EXPORT main_t = common::export_list<rectangle_walk_t<2>, generic_distance_t, device_counting_t, progress_tracking_t>;
 
 
 }
