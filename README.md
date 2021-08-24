@@ -15,26 +15,30 @@ Sample projects provided with the FCPP distribution, designed to provide guidanc
 All commands below are assumed to be issued from the cloned git repository folder.
 For any issues with reproducing the experiments, please contact [Giorgio Audrito](mailto:giorgio.audrito@unito.it).
 
+
 ## References
 
 - FCPP main website: [https://fcpp.github.io](https://fcpp.github.io).
 - FCPP documentation: [http://fcpp-doc.surge.sh](http://fcpp-doc.surge.sh).
 - FCPP sources: [https://github.com/fcpp/fcpp](https://github.com/fcpp/fcpp).
 
-## Batch Simulation
 
-The *collection compare* batch simulation is preferably executed through the [Bazel](https://bazel.build) build system, and can be either done in a virtual environment for an easier setup, or in the native OS for increased performance. Execution instructions follow for the various supported mediums.
+## Setup
+
+The next sections contain the setup instructions for the various supported OSs, based on the CMake build system.
+For backward compatibility (and faster testing), the Bazel build system is also supported but not recommended: in particular, the OpenGL graphical user interface is not available with Bazel. In order to use Bazel instead of CMake for building, substitute `./make.sh bazel` for `./make.sh` in the commands below.
+
+**Warning:** the graphical simulations are based on OpenGL, and common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL. Thus, running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Batch simulations should work within VMs, and a Docker container to this aim is provided for convenience.
 
 ### Vagrant
 
-Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), then type the following commands in a terminal:
+Download Vagrant from [https://www.vagrantup.com](https://www.vagrantup.com), then type the following commands in a terminal to enter the Vagrant VM:
 ```
 vagrant up
 vagrant ssh
 cd fcpp
-./make.sh run -O collection_compare
 ```
-Then you should get output about building the experiments and running them (in the Vagrant virtual machine). After that you can exit and stop the virtual machine through:
+and the following commands to exit it:
 ```
 exit
 vagrant halt
@@ -42,7 +46,7 @@ vagrant halt
 
 ### Docker
 
-Download Docker from [https://www.docker.com](https://www.docker.com), then download the Docker container from GitHub by typing the following command in a terminal:
+Download Docker from [https://www.docker.com](https://www.docker.com), then you can download the Docker container from GitHub by typing the following command in a terminal:
 ```
 docker pull docker.pkg.github.com/fcpp/fcpp/container:1.0
 ```
@@ -50,28 +54,14 @@ Alternatively, you can build the container yourself with the following command:
 ```
 docker build -t docker.pkg.github.com/fcpp/fcpp/container:1.0 .
 ```
-Once you have the Docker container locally available, type the following commands:
+Once you have the Docker container locally available, type the following command to enter the container:
 ```
 docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fcpp/container:1.0 bash
-./make.sh run -O collection_compare
 ```
-Then you should get output about building the experiments and running them (in the Docker container). After that you can exit and stop the container through:
+and the following command to exit it:
 ```
 exit
 ```
-
-### Custom Build
-
-In order to get started on your machine you need the following installed:
-
-- [Bazel](https://bazel.build) (tested with version 2.1.0)
-- [GCC](https://gcc.gnu.org) (tested with version 9.2.0) or [Clang](https://clang.llvm.org) (tested with Apple Clang 12.0.5)
-
-Once you have them installed, you should be able to run `./make.sh run -O collection_compare`, getting output about building the experiments and running them.
-
-## Graphical Simulation
-
-The OpenGL-based graphical simulations can only be built through the [CMake](https://cmake.org) build system in the native OS. Common Virtual Machine software (e.g., VirtualBox) has faulty support for OpenGL, hence running the graphical experiments in a VM is not supported: it may work for you, but it is not recommended. Execution instructions follow for the various supported OSs, followed by a description of the two demo scenarios and their user interface.
 
 ### Windows
 
@@ -86,11 +76,7 @@ During MinGW installation, make sure you select "posix" threads (should be the d
 ```
 C:\Program Files (x86)\mingw-w64\i686-8.1.0-posix-dwarf-rt_v6-rev0\mingw32\bin
 ```
-but the actual path may vary depending on your installation. Then, type the following command in a terminal:
-```
-> ./make.sh gui windows [target...]
-```
-where `[target...]` are among the two described in the *Demo Scenarios* subsection (if present). You should see output about building the executables, then the graphical simulation should pop up.
+but the actual path may vary depending on your installation.
 
 ### Linux
 
@@ -104,11 +90,6 @@ To install these packages in Ubuntu, type the following command:
 ```
 sudo apt-get install xorg-dev g++ cmake asymptote
 ```
-Then, type the following command in a terminal:
-```
-> ./make.sh gui unix [target...]
-```
-where `[target...]` are among the two described in the *Demo Scenarios* subsection (if present). You should see output about building the executables, then the graphical simulation should pop up.
 
 ### MacOS
 
@@ -122,19 +103,26 @@ To install them, assuming you have the [brew](https://brew.sh) package manager, 
 xcode-select --install
 brew install cmake asymptote
 ```
-Then, type the following command in a terminal:
+
+
+## Execution
+
+In order to execute the simulations, type one of the following command in a terminal:
 ```
-> ./make.sh gui unix [target...]
+> ./make.sh [gui] run -O [targets...]
 ```
-where `[target...]` are among the two described in the *Demo Scenarios* subsection (if present). You should see output about building the executables, then the graphical simulation should pop up.
+The `gui` option, if present, enables the graphical user interface (has no effect on command-line targets). The possible targets are:
+- `spreading_collection_gui` (with GUI)
+- `spreading_collection_run`
+- `spreading_collection_batch` (produces plots)
+- `collection_compare`
+- `channel_broadcast` (with GUI, produces plots)
+- `all` (for running all of the above)
+Running the above command, you should see output about building the executables and running them, graphical simulations should pop up (if there are any in the targets), PDF plots should be produces in the `plot/` directory (if any are produced by the targets), and the textual output will be saved in the `output/` directory.
 
-### Demo Scenarios
+### Graphical User Interface
 
-The installation instructions above build two demo scenarios in the `bin/` directory:
-- Channel Broadcast (executable and target `channel_broadcast`)
-- Spreading Collection (executable and target `spreading_collection`)
-
-To launch a scenario manually, move to the `bin` directory and run its executable. This will open a window displaying the simulation scenario, initially still: you can start running the simulation by pressing `P` (current simulated time is displayed in the bottom-left corner). While the simulation is running, network statistics will be periodically printed in the console. You can interact with the simulation through the following keys:
+Executing a graphical simulation will open a window displaying the simulation scenario, initially still: you can start running the simulation by pressing `P` (current simulated time is displayed in the bottom-left corner). While the simulation is running, network statistics will be periodically printed in the console. You can interact with the simulation through the following keys:
 - `Esc` to end the simulation
 - `P` to stop/resume
 - `O`/`I` to speed-up/slow-down simulated time
@@ -147,3 +135,4 @@ To launch a scenario manually, move to the `bin` directory and run its executabl
 - `right-click`+`mouse drag` to rotate the camera
 - `mouse scroll` for zooming in and out
 - `left-shift` added to the camera commands above for precision control
+- any other key will show/hide a legenda displaying this list
