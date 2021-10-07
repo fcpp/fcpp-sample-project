@@ -26,7 +26,7 @@ For any issues with reproducing the experiments, please contact [Giorgio Audrito
 ## Setup
 
 The next sections contain the setup instructions based on the CMake build system for the various supported OSs and virtual containers. Jump to the section dedicated to your system of choice and ignore the others.
-For backward compatibility (and faster testing), the Bazel build system is also supported but not recommended: in particular, the OpenGL graphical user interface is not available with Bazel. In order to use Bazel instead of CMake for building, substitute `./make.sh bazel` for `./make.sh` in the commands below.
+For backward compatibility (and faster testing), the [Bazel](https://bazel.build) build system is also supported but not recommended: in particular, the OpenGL graphical user interface is not available with Bazel. In order to use Bazel instead of CMake for building, you have to install it and then substitute `./make.sh bazel` for `./make.sh` in the commands of the "Execution" section.
 
 ### Windows
 
@@ -55,13 +55,17 @@ To install these packages in Ubuntu, type the following command:
 ```
 sudo apt-get install xorg-dev g++ cmake asymptote
 ```
+In Fedora, the `xorg-dev` package is not available. Instead, install the packages:
+```
+libX11-devel libXinerama-devel.x86_6 libXcursor-devel.x86_64 libXi-devel.x86_64 libXrandr-devel.x86_64 mesa-libGL-devel.x86_64
+```
 
 ### MacOS
 
 Pre-requisites:
 - Xcode Command Line Tools
 - CMake 3.9 (or higher)
-- [Asymptote](http://asymptote.sourceforge.io) (for building the plots)
+- Asymptote (for building the plots)
 
 To install them, assuming you have the [brew](https://brew.sh) package manager, type the following commands:
 ```
