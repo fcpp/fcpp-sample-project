@@ -84,6 +84,7 @@ FUN bool channel(ARGS, bool source, bool dest, double width) { CODE
     node.storage(tags::node_shape{}) = source or dest ? shape::tetrahedron : c ? shape::icosahedron : shape::sphere;
     return c;
 }
+//! @brief Exports for the channel function.
 FUN_EXPORT channel_t = common::export_list<bis_distance_t, broadcast_t<double, double>>;
 
 //! @brief Main function.
@@ -96,6 +97,7 @@ MAIN() {
     channel(CALL, is_src, is_dst, 20);
     node.storage(tags::size{}) = is_src or is_dst ? 30 : 10;
 }
+//! @brief Exports for the main function.
 FUN_EXPORT main_t = common::export_list<rectangle_walk_t<3>, channel_t>;
 
 
