@@ -17,6 +17,15 @@ cc_binary(
 )
 
 cc_binary(
+    name = "message_dispatch",
+    srcs = ["message_dispatch.cpp"],
+    deps = [
+        "@fcpp//lib:fcpp",
+        "//lib:message_dispatch",
+    ],
+)
+
+cc_binary(
     name = "spreading_collection_batch",
     srcs = ["spreading_collection_batch.cpp"],
     deps = [

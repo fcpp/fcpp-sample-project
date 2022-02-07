@@ -4,6 +4,7 @@
 bin/
 doc/
 output/
+plot/
 .vagrant/
 .DS_Store
 bazel-*

@@ -11,6 +11,7 @@ project(
 
 fcpp_target(./run/channel_broadcast.cpp             ON)
 fcpp_target(./run/collection_compare.cpp            OFF)
+fcpp_target(./run/message_dispatch.cpp              ON)
 fcpp_target(./run/spreading_collection_batch.cpp    OFF)
 fcpp_target(./run/spreading_collection_gui.cpp      ON)
 fcpp_target(./run/spreading_collection_run.cpp      OFF)

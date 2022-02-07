@@ -27,6 +27,20 @@ cc_library(
 )
 
 cc_library(
+    name = "message_dispatch",
+    hdrs = ["message_dispatch.hpp"],
+    srcs = ['message_dispatch.cpp'],
+    deps = [
+        "@fcpp//lib:beautify",
+        "@fcpp//lib:coordination",
+        "@fcpp//lib:data"
+    ],
+    visibility = [
+        '//visibility:public',
+    ],
+)
+
+cc_library(
     name = "spreading_collection",
     hdrs = ["spreading_collection.hpp"],
     srcs = ['spreading_collection.cpp'],
