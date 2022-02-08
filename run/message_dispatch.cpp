@@ -8,7 +8,7 @@ using namespace component::tags;
 using namespace coordination::tags;
 
 constexpr size_t dim = 3;
-constexpr size_t end = 200;
+constexpr size_t end = 1000;
 
 //! @brief Average time of first delivery.
 struct avg_first_delivery {};
@@ -41,7 +41,7 @@ using delay_t = plot::split<plot::time, plot::value<avg_first_delivery>>;
 using plot_t = plot::join<maxs_t, tots_t, counts_t, delay_t>;
 
 DECLARE_OPTIONS(opt,
-    parallel<false>,
+    parallel<true>,
     synchronised<false>,
     program<coordination::main>,
     exports<coordination::main_t>,

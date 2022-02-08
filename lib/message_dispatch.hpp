@@ -177,7 +177,7 @@ MAIN() {
     });
     // random message with 1% probability until time 100
     common::option<message> m;
-    if (node.current_time() < 100 and node.next_real() < 0.01) {
+    if (node.current_time() < 50 and node.next_real() < 0.01) {
         m.emplace(node.uid, (device_t)node.next_int(devices-1), node.current_time());
         node.storage(sent_count{}) += 1;
     }

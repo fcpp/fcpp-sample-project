@@ -9,6 +9,7 @@ project(
     DESCRIPTION "Sample project to help setup of FCPP-based projects."
 )
 
+fcpp_target(./run/apartment_walk.cpp                ON)
 fcpp_target(./run/channel_broadcast.cpp             ON)
 fcpp_target(./run/collection_compare.cpp            OFF)
 fcpp_target(./run/message_dispatch.cpp              ON)
