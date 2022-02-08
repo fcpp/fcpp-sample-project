@@ -35,7 +35,8 @@ struct message {
 
     //! @brief Hash computation.
     size_t hash() const {
-        return (size_t(from) << (sizeof(size_t)*CHAR_BIT/2)) | to;
+        constexpr size_t offs = sizeof(size_t)*CHAR_BIT/3;
+        return (size_t(time) << (2*offs)) | (size_t(from) << (offs)) | size_t(to);
     }
 
     //! @brief Serialises the content from/to a given input/output stream.
