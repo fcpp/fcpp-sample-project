@@ -8,10 +8,12 @@ using namespace component::tags;
 using namespace coordination::tags;
 
 constexpr size_t dim = 3;
+constexpr size_t end = 150;
 
 using round_s = sequence::periodic<
     distribution::interval_n<times_t, 0, 1>,
-    distribution::weibull_n<times_t, 10, 1, 10>
+    distribution::weibull_n<times_t, 10, 1, 10>,
+    distribution::constant_n<times_t, end+2>
 >;
 
 using rectangle_d = distribution::rect_n<1, 0, 0, 0, side, side, height>;
@@ -37,7 +39,7 @@ DECLARE_OPTIONS(opt,
     program<coordination::main>,
     exports<coordination::main_t>,
     round_schedule<round_s>,
-    log_schedule<sequence::periodic_n<1, 0, 1>>,
+    log_schedule<sequence::periodic_n<1, 0, 1, end>>,
     spawn_schedule<sequence::multiple_n<devices, 0>>,
     tuple_store<
         speed,              double,

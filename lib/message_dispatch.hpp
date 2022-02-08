@@ -175,14 +175,14 @@ MAIN() {
         x.insert(y.begin(), y.end());
         return x;
     });
-    // random message with 1% probability
+    // random message with 1% probability until time 100
     common::option<message> m;
-    if (node.next_real() < 0.01) {
+    if (node.current_time() < 100 and node.next_real() < 0.01) {
         m.emplace(node.uid, (device_t)node.next_int(devices-1), node.current_time());
         node.storage(sent_count{}) += 1;
     }
-    // deploys messages
-    std::vector<color> procs{BLACK};
+    // dispatches messages
+    std::vector<color> procs{color(BLACK)};
     map_t r = spawn(CALL, [&](message const& m){
         procs.push_back(color::hsva(m.to*360.0/devices, 1, 1));
         bool inpath = below.count(m.from) + below.count(m.to) > 0;
