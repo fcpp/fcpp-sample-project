@@ -64,7 +64,7 @@ DECLARE_OPTIONS(opt,
     plot_type<plot_t>,
     dimension<dim>,
     connector<connect::fixed<comm, 1, dim>>,
-    message_size<false>,
+    message_size<true>,
     shape_tag<node_shape>,
     size_tag<node_size>,
     color_tag<node_color, left_color, right_color>

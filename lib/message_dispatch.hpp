@@ -27,12 +27,30 @@ struct message {
 
     //! @brief Member constructor.
     message(fcpp::device_t from, fcpp::device_t to, fcpp::times_t time) : from(from), to(to), time(time) {}
+
+    //! @brief Equality operator.
+    bool operator==(message const& m) const {
+        return from == m.from and to == m.to and time == m.time;
+    }
+
+    //! @brief Hash computation.
+    size_t hash() const {
+        return (size_t(from) << (sizeof(size_t)*CHAR_BIT/2)) | to;
+    }
+
+    //! @brief Serialises the content from/to a given input/output stream.
+    template <typename S>
+    S& serialize(S& s) {
+        return s & from & to & time;
+    }
+
+    //! @brief Serialises the content from/to a given input/output stream (const overload).
+    template <typename S>
+    S& serialize(S& s) const {
+        return s << from << to << time;
+    }
 };
 
-//! @brief Equality operator.
-bool operator==(message const& x, message const& y) {
-    return x.from == y.from and x.to == y.to and x.time == y.time;
-}
 
 namespace std {
     //! @brief Hasher object for the message struct.
@@ -40,7 +58,7 @@ namespace std {
     struct hash<message> {
         //! @brief Produces an hash for a message, combining to and from into a size_t.
         size_t operator()(message const& m) const {
-            return (size_t(m.from) << (sizeof(size_t)*CHAR_BIT/2)) | m.to;
+            return m.hash();
         }
     };
 }
@@ -193,7 +211,7 @@ MAIN() {
     });
 }
 //! @brief Exports for the main function.
-FUN_EXPORT main_t = common::export_list<rectangle_walk_t<3>, bis_distance_t, sp_collection_t<double, set_t>, device_t, spawn_t<message, status>, map_t>;
+FUN_EXPORT main_t = export_list<rectangle_walk_t<3>, bis_distance_t, sp_collection_t<double, set_t>, device_t, spawn_t<message, status>, map_t>;
 
 
 }
