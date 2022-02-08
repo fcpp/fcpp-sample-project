@@ -8,7 +8,10 @@ using namespace component::tags;
 using namespace coordination::tags;
 
 constexpr size_t dim = 3;
-constexpr size_t end = 150;
+constexpr size_t end = 200;
+
+//! @brief Average time of first delivery.
+struct avg_first_delivery {};
 
 using round_s = sequence::periodic<
     distribution::interval_n<times_t, 0, 1>,
@@ -31,7 +34,11 @@ using aggregator_t = aggregators<
 
 template <typename... Ts>
 using lines_t = plot::join<plot::values<aggregator_t, common::type_sequence<>, Ts>...>;
-using plot_t = plot::split<plot::time, lines_t<max_msg, tot_msg, max_proc, tot_proc, first_delivery, sent_count, delivery_count, repeat_count>>;
+using maxs_t = plot::split<plot::time, lines_t<max_msg, max_proc>>;
+using tots_t = plot::split<plot::time, lines_t<tot_msg, tot_proc>>;
+using counts_t = plot::split<plot::time, lines_t<sent_count, delivery_count, repeat_count>>;
+using delay_t = plot::split<plot::time, plot::value<avg_first_delivery>>;
+using plot_t = plot::join<maxs_t, tots_t, counts_t, delay_t>;
 
 DECLARE_OPTIONS(opt,
     parallel<false>,
@@ -59,9 +66,12 @@ DECLARE_OPTIONS(opt,
         node_shape,         shape
     >,
     aggregator_t,
+    log_functors<
+        avg_first_delivery, functor::div<aggregator::sum<first_delivery, true>, aggregator::sum<delivery_count, false>>
+    >,
     init<
         x,                  rectangle_d,
-        speed,              distribution::constant_n<double, 5>
+        speed,              distribution::constant_n<double, 1>
     >,
     plot_type<plot_t>,
     dimension<dim>,
