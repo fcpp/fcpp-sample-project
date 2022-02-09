@@ -13,6 +13,12 @@ constexpr size_t end = 1000;
 //! @brief Average time of first delivery.
 struct avg_first_delivery {};
 
+//! @brief Total size of messages exchanged per unit of time.
+struct tot_msg_exchanged {};
+
+//! @brief Total active processes per unit of time.
+struct tot_active_proc {};
+
 using round_s = sequence::periodic<
     distribution::interval_n<times_t, 0, 1>,
     distribution::weibull_n<times_t, 10, 1, 10>,
@@ -34,10 +40,12 @@ using aggregator_t = aggregators<
 
 template <typename... Ts>
 using lines_t = plot::join<plot::values<aggregator_t, common::type_sequence<>, Ts>...>;
+template <typename... Ts>
+using rows_t = plot::join<plot::value<Ts>...>;
 using maxs_t = plot::split<plot::time, lines_t<max_msg, max_proc>>;
-using tots_t = plot::split<plot::time, lines_t<tot_msg, tot_proc>>;
+using tots_t = plot::split<plot::time, rows_t<tot_msg_exchanged, tot_active_proc>>;
 using counts_t = plot::split<plot::time, lines_t<sent_count, delivery_count, repeat_count>>;
-using delay_t = plot::split<plot::time, plot::value<avg_first_delivery>>;
+using delay_t = plot::split<plot::time, rows_t<avg_first_delivery>>;
 using plot_t = plot::join<maxs_t, tots_t, counts_t, delay_t>;
 
 DECLARE_OPTIONS(opt,
@@ -67,7 +75,9 @@ DECLARE_OPTIONS(opt,
     >,
     aggregator_t,
     log_functors<
-        avg_first_delivery, functor::div<aggregator::sum<first_delivery, true>, aggregator::sum<delivery_count, false>>
+        avg_first_delivery, functor::div<aggregator::sum<first_delivery, true>, aggregator::sum<delivery_count, false>>,
+        tot_msg_exchanged,  functor::diff<aggregator::sum<tot_msg, false>>,
+        tot_active_proc,    functor::diff<aggregator::sum<tot_proc, false>>
     >,
     init<
         x,                  rectangle_d,
