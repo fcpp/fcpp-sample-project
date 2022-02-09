@@ -83,7 +83,7 @@ constexpr size_t discrete_sqrt(size_t n) {
 }
 
 //! @brief Number of devices.
-constexpr size_t devices = 1000;
+constexpr size_t devices = 300;
 
 //! @brief Communication radius.
 constexpr size_t comm = 100;
@@ -167,7 +167,7 @@ MAIN() {
     node.storage(center_dist{}) = ds;
     node.storage(node_color{}) = color::hsva(ds*hue_scale, 1, 1);
     node.storage(node_shape{}) = is_src ? shape::cube : shape::icosahedron;
-    node.storage(node_size{}) = is_src ? 20 : 10;
+    node.storage(node_size{}) = is_src ? 16 : 10;
     // spanning tree definition
     device_t parent = get<1>(min_hood(CALL, make_tuple(nbr(CALL, ds), node.nbr_uid())));
     // routing sets along the tree
@@ -175,9 +175,9 @@ MAIN() {
         x.insert(y.begin(), y.end());
         return x;
     });
-    // random message with 1% probability until time 100
+    // random message with 1% probability during time [10..50]
     common::option<message> m;
-    if (node.current_time() < 50 and node.next_real() < 0.01) {
+    if (node.current_time() > 10 and node.current_time() < 50 and node.next_real() < 0.01) {
         m.emplace(node.uid, (device_t)node.next_int(devices-1), node.current_time());
         node.storage(sent_count{}) += 1;
     }
@@ -195,6 +195,7 @@ MAIN() {
     node.storage(tot_proc{}) += procs.size() - 1;
     node.storage(max_msg{}) = max(node.storage(max_msg{}), node.msg_size());
     node.storage(tot_msg{}) += node.msg_size();
+    if (procs.size() > 1) node.storage(node_size{}) *= 1.5;
     // additional node rendering
     node.storage(left_color{})  = procs[min(int(procs.size()), 2)-1];
     node.storage(right_color{}) = procs[min(int(procs.size()), 3)-1];
