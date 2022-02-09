@@ -23,11 +23,13 @@ bool operator<(vec<n> const& a, vec<n> const& b) {
 }
 
     //! @brief Dimensionality of the space.
-constexpr size_t dim = 2;
+constexpr size_t dim = 3;
 //! @brief Side of the deployment area.
-constexpr size_t width = 500;
+constexpr size_t width = 850;
 //! @brief Height of the deployment area.
 constexpr size_t height = 500;
+//! @brief Tallness of the deployment area.
+constexpr size_t tall = 50;
 
 //! @brief Namespace containing the libraries of coordination routines.
 namespace coordination {
@@ -59,7 +61,7 @@ namespace tags {
 MAIN() {
 
     node.storage(tags::node_size{}) = 10;
-    node.storage(tags::node_color{}) = color(GREEN);
+    node.storage(tags::node_color{}) = color(TAN);
     node.storage(tags::node_shape{}) = shape::sphere;
 
     // used to set position of out of bound nodes at the start
@@ -69,7 +71,7 @@ MAIN() {
             int deltaX, deltaY, size = node.storage(tags::node_size{});
             if((p2 - node.position())[0] > 0) deltaX = +size; else deltaX = -size;
             if((p2 - node.position())[1] > 0) deltaY = +size; else deltaY = -size;
-            node.position() = make_vec(p2[0] + deltaX, p2[1] + deltaY);
+            node.position() = make_vec(p2[0] + deltaX, p2[1] + deltaY, tall);
         }
     }
 
@@ -82,23 +84,23 @@ MAIN() {
     node.storage(tags::distance_min_nbr{}) = min_neighbor_dist;
 
     if (dist1 <= 30) {
-        node.velocity() = make_vec(0,0);
-        node.propulsion() = make_vec(0,0);
+        node.velocity() = make_vec(0,0,0);
+        node.propulsion() = make_vec(0,0,0);
         node.propulsion() += -coordination::point_elastic_force(CALL,closest,1,0.10);
         if (min_neighbor_dist <= 25) {
-            node.velocity() = make_vec(0,0);
+            node.velocity() = make_vec(0,0,0);
             node.propulsion() += -coordination::neighbour_elastic_force(CALL, 0.05, 0.05);
         }
     }
     else {
         if (min_neighbor_dist <= 25) {
-            node.propulsion() = make_vec(0,0);
-            node.velocity() = make_vec(0,0);
+            node.propulsion() = make_vec(0,0,0);
+            node.velocity() = make_vec(0,0,0);
             node.propulsion() += -coordination::neighbour_elastic_force(CALL, 0.05, 0.05);
         }
         else {
-            node.propulsion() = make_vec(0,0);
-            rectangle_walk(CALL, make_vec(0, 0), make_vec(width, height), node.storage(tags::speed{}), 1);
+            node.propulsion() = make_vec(0,0,0);
+            rectangle_walk(CALL, make_vec(0, 0, tall), make_vec(width, height, tall), node.storage(tags::speed{}), 1);
         }
     }
 
@@ -106,7 +108,7 @@ MAIN() {
 
 }
 //! @brief Export types used by the main function (update it when expanding the program).
-FUN_EXPORT main_t = common::export_list<double, int, rectangle_walk_t<2>>;
+FUN_EXPORT main_t = common::export_list<double, int, rectangle_walk_t<dim>>;
 
 } // namespace coordination
 
@@ -120,10 +122,12 @@ using namespace component::tags;
 //! @brief Import tags used by aggregate functions.
 using namespace coordination::tags;
 
+using fcpp::dim;
+using fcpp::width;
+using fcpp::height;
+
 //! @brief Number of people in the area.
 constexpr int node_num = 10;
-//! @brief Dimensionality of the space.
-constexpr size_t dim = 2;
 
 //! @brief Description of the round schedule.
 using round_s = sequence::periodic<
@@ -134,13 +138,13 @@ using round_s = sequence::periodic<
 using log_s = sequence::periodic_n<1, 0, 1>;
 //! @brief The sequence of node generation events (node_num devices all generated at time 0).
 using spawn_s = sequence::multiple_n<node_num, 0>;
-//! @brief The distribution of initial node positions (random in a 500x500 square).
-using rectangle_d = distribution::rect_n<1, 0, 0, 850, 500>;
+//! @brief The distribution of initial node positions (random in a 850x500 square).
+using rectangle_d = distribution::rect_n<1, 0, 0, tall, width, height, tall>;
 //! @brief The distribution of node speeds (all equal to a fixed value).
 using speed_d = distribution::constant_i<double, speed>;
 //! @brief The contents of the node storage as tags and associated types.
 using store_t = tuple_store<
-    nearest_obstacle,           vec<2>,
+    nearest_obstacle,           vec<dim>,
     distance_from_obstacle,     real_t,
     obstacle_delta_x,           real_t,
     obstacle_delta_y,           real_t,
@@ -176,7 +180,7 @@ DECLARE_OPTIONS(list,
     shape_tag<node_shape>, // the shape of a node is read from this tag in the store
     size_tag<node_size>,   // the size  of a node is read from this tag in the store
     color_tag<node_color>,  // the color of a node is read from this tag in the store
-    area<0,0,850,500,1>
+    area<0,0,width,height>
 );
 
 } // namespace option
