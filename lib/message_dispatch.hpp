@@ -149,8 +149,9 @@ namespace tags {
     struct node_shape {};
 }
 
-
+//! @brief Shorthand for a set of devices.
 using set_t = std::unordered_set<device_t>;
+//! @brief Shorthand for a map associating times to messages.
 using map_t = std::unordered_map<message, times_t>;
 
 //! @brief Main function.
