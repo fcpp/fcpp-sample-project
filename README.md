@@ -45,11 +45,11 @@ It is recommended to install MinGW-w64 through [MSYS2](https://www.msys2.org/) i
 - Run "MSYS2 MSYS" again, and run `pacman -Su`.
 - Run `pacman -S --needed base-devel mingw-w64-x86_64-toolchain` to install the MinGW-w64 toolchain.
 
-After the installation of MinGW-w64, make sure to add the compiler binaries' path to the `PATH` environment variable. They should reside in MSYS2's installation folder as such:
+After the installation of MinGW-w64, make sure to add the compiler binaries' path to the `PATH` environment variable (e.g., by editing the `.bashrc` file in your home). They should reside in MSYS2's installation folder as such:
 ```
 C:\msys64\mingw64\bin
 ```
-but the actual path may vary depending on your installation.
+but the actual path may vary depending on your installation (the compiler binaries are already in the path if you execute the 'MSYS2 MinGW x64' shortcut from the start menu).
 
 ### Linux
 
