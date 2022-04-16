@@ -20,6 +20,7 @@ For any issues with reproducing the experiments, please contact [Giorgio Audrito
 
 - FCPP main website: [https://fcpp.github.io](https://fcpp.github.io).
 - FCPP documentation: [http://fcpp-doc.surge.sh](http://fcpp-doc.surge.sh).
+- FCPP presentation paper: [http://giorgio.audrito.info/static/fcpp.pdf](http://giorgio.audrito.info/static/fcpp.pdf).
 - FCPP sources: [https://github.com/fcpp/fcpp](https://github.com/fcpp/fcpp).
 
 
@@ -35,6 +36,7 @@ Pre-requisites:
 - [MinGW-w64](http://mingw-w64.org) (GCC 11.2.0 or higher)
 - [CMake 3.18](https://cmake.org) (or higher)
 - [Asymptote](http://asymptote.sourceforge.io) (for building the plots)
+- [Doxygen](http://www.doxygen.nl) (for building the documentation)
 
 It is recommended to install MinGW-w64 and CMake through [MSYS2](https://www.msys2.org/) in order to get the latest version of MinGW-w64's GCC and CMake. To do so:
 - Download and install MSYS2.
@@ -61,10 +63,11 @@ Pre-requisites:
 - G++ 9 (or higher)
 - CMake 3.18 (or higher)
 - Asymptote (for building the plots)
+- Doxygen (for building the documentation)
 
 To install these packages in Ubuntu, type the following command:
 ```
-sudo apt-get install xorg-dev g++ cmake asymptote
+sudo apt-get install xorg-dev g++ cmake asymptote doxygen
 ```
 In Fedora, the `xorg-dev` package is not available. Instead, install the packages:
 ```
@@ -77,11 +80,12 @@ Pre-requisites:
 - Xcode Command Line Tools
 - CMake 3.18 (or higher)
 - Asymptote (for building the plots)
+- Doxygen (for building the documentation)
 
 To install them, assuming you have the [brew](https://brew.sh) package manager, type the following commands:
 ```
 xcode-select --install
-brew install cmake asymptote
+brew install cmake asymptote doxygen
 ```
 
 ### Docker container
@@ -135,13 +139,14 @@ In order to execute the simulations, type the following command in a terminal:
 ```
 > ./make.sh [gui] run -O [targets...]
 ```
-The `gui` option, if present, enables the graphical user interface (has no effect on command-line targets). The possible targets are:
+The `gui` option, if present, enables the graphical user interface (has no effect on command-line targets, beside slowing down their compilation). The possible targets are:
+- `all` (for running all targets)
+- `apartment_walk` (with GUI)
+- `channel_broadcast` (with GUI, produces plots)
+- `collection_compare`
+- `spreading_collection_batch` (produces plots)
 - `spreading_collection_gui` (with GUI)
 - `spreading_collection_run`
-- `spreading_collection_batch` (produces plots)
-- `collection_compare`
-- `channel_broadcast` (with GUI, produces plots)
-- `all` (for running all of the above)
 You can also type part of a target and the script will execute every possible expansion (e.g., `comp` would expand to `collection_compare`).
 
 Running the above command, you should see output about building the executables and running them, graphical simulations should pop up (if there are any in the targets), PDF plots should be produces in the `plot/` directory (if any are produced by the targets), and the textual output will be saved in the `output/` directory.
