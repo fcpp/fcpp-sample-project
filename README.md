@@ -2,15 +2,19 @@
 
 Sample projects provided with the FCPP distribution, designed to provide guidance for the setup of new FCPP-based projects for various execution paradigms. The repository contains three sample projects:
 
-- **Spreading-collection**. This project shows how a single aggregate program can be setup for being run under different execution paradigms without modifications. It implements a simple composition of spreading and collection blocks, to dynamically calculate the diameter of a network. This project consists of four files:
+- **Apartment walk**. This project shows a graphical interactive setup of devices randomly moving while avoiding obstacles in a typical apartment.
+
+- **Channel broadcast**. This project shows a graphical interactive setup, and implements a paradigmatic aggregate computing routine: two appointed devices communicate through broadcast in a selected elliptical area connecting them. 
+
+- **Collection compare**. This project shows a non-interactive command line-based setup, and is a translation into FCPP of the experiments in [this repository](https://bitbucket.org/Harniver/aamas19-summarising), presented at [AAMAS 2019](http://aamas2019.encs.concordia.ca), which compare the performance of existing self-stabilising collection algorithms. This translation has been presented and evaluated at [ACSOS 2020](https://conf.researchr.org/home/acsos-2020) through [this paper](http://giorgio.audrito.info/static/fcpp.pdf).
+
+- **Message dispatch**. This project shows a graphical interactive setup, and implements a paradigmatic "aggregate processes" routine: pairs of devices exchanging messages through a self-organising tree structure guiding their propagation. 
+
+- **Spreading collection**. This project shows how a single aggregate program can be setup for being run under different execution paradigms without modifications. It implements a simple composition of spreading and collection blocks, to dynamically calculate the diameter of a network. This project consists of four files:
     - `lib/spreading_collection.hpp` which contains the aggregate program and general setup;
     - `run/spreading_collection_gui.cpp` which executes the program interactively with a GUI;
     - `run/spreading_collection_run.cpp` wich executes the program non-interactively in the command line;
     - `run/spreading_collection_batch.cpp` with executes the program on a batch of scenarios, producing summarising plots.
-
-- **Collection-compare**. This project shows a non-interactive command line-based setup, and is a translation into FCPP of the experiments in [this repository](https://bitbucket.org/Harniver/aamas19-summarising), presented at [AAMAS 2019](http://aamas2019.encs.concordia.ca), which compare the performance of existing self-stabilising collection algorithms. This translation has been presented and evaluated at [ACSOS 2020](https://conf.researchr.org/home/acsos-2020) through [this paper](http://giorgio.audrito.info/static/fcpp.pdf).
-
-- **Channel-broadcast**. This project shows a graphical interactive setup, and implements a paradigmatic aggregate computing routine: two appointed devices communicate through broadcast in a selected elliptical area connecting them. 
 
 All commands below are assumed to be issued from the cloned git repository folder.
 For any issues with reproducing the experiments, please contact [Giorgio Audrito](mailto:giorgio.audrito@unito.it).
@@ -139,7 +143,8 @@ In order to execute the simulations, type the following command in a terminal:
 ```
 > ./make.sh [gui] run -O [targets...]
 ```
-The `gui` option, if present, enables the graphical user interface (has no effect on command-line targets, beside slowing down their compilation). The possible targets are:
+You can omit the `gui` argument if you don't need the graphical user interface; or omit the `-O` argument for a debug build (instead of an optimised build). On newer Mac M1 computers, the `-O` argument may induce compilation errors: in that case, use the `-O3` argument instead.
+The possible targets are:
 - `all` (for running all targets)
 - `apartment_walk` (with GUI)
 - `channel_broadcast` (with GUI, produces plots)
