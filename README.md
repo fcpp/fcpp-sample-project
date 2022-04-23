@@ -1,6 +1,6 @@
 # FCPP Sample Projects
 
-Sample projects provided with the FCPP distribution, designed to provide guidance for the setup of new FCPP-based projects for various execution paradigms. The repository contains three sample projects:
+Sample projects provided with the FCPP distribution, designed to provide guidance for the setup of new FCPP-based projects for various execution paradigms. The repository contains five sample projects:
 
 - **Apartment walk**. This project shows a graphical interactive setup of devices randomly moving while avoiding obstacles in a typical apartment.
 
