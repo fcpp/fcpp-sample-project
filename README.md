@@ -144,7 +144,7 @@ The possible targets are:
 - `spreading_collection_run`
 You can also type part of a target and the script will execute every possible expansion (e.g., `comp` would expand to `collection_compare`).
 
-Running the above command, you should see output about building the executables and running them, graphical simulations should pop up (if there are any in the targets), PDF plots should be produces in the `plot/` directory (if any are produced by the targets), and the textual output will be saved in the `output/` directory.
+Running the above command, you should see output about building the executables and running them, graphical simulations should pop up (if there are any in the targets), PDF plots should be produced in the `plot/` directory (if any are produced by the targets), and the textual output will be saved in the `output/` directory.
 
 ### Graphical User Interface
 
