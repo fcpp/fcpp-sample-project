@@ -12,6 +12,9 @@ using namespace fcpp;
 
 int main(int argc, char** argv) {
 	MPI_Init(&argc, &argv);
+	int rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+	std::cout << "process with rank " << rank << std::endl;
     //! @brief Construct the plotter object.
     option::plot_t p;
     //! @brief The component type (batch simulator with given options).

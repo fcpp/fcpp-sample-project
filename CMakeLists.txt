@@ -15,6 +15,7 @@ fcpp_target(./run/collection_compare.cpp            OFF)
 fcpp_target(./run/message_dispatch.cpp              ON)
 fcpp_target(./run/spreading_collection_batch.cpp    OFF)
 fcpp_target(./run/spreading_collection_gui.cpp      ON)
+fcpp_target(./run/spreading_collection_mpi.cpp      ON)
 fcpp_target(./run/spreading_collection_run.cpp      OFF)
 
 fcpp_test(./test/tester.cpp)
