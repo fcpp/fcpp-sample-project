@@ -1,7 +1,7 @@
-// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2023 Giorgio Audrito. All Rights Reserved.
 
 /**
- * @file spreading_collection_run.cpp
+ * @file spreading_collection_batch.cpp
  * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots.
  */
 
