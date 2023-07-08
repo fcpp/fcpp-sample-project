@@ -59,7 +59,6 @@ namespace tags {
 
 //! @brief Main function.
 MAIN() {
-
     node.storage(tags::node_size{}) = 10;
     node.storage(tags::node_color{}) = color(TAN);
     node.storage(tags::node_shape{}) = shape::sphere;
@@ -103,9 +102,6 @@ MAIN() {
             rectangle_walk(CALL, make_vec(0, 0, tall), make_vec(width, height, tall), node.storage(tags::speed{}), 1);
         }
     }
-
-
-
 }
 //! @brief Export types used by the main function (update it when expanding the program).
 FUN_EXPORT main_t = common::export_list<double, int, rectangle_walk_t<dim>>;
