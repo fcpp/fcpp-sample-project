@@ -42,6 +42,22 @@ cc_binary(
 )
 
 cc_binary(
+    name = "spreading_collection_mpi_2",
+    srcs = ["spreading_collection_mpi_2.cpp"],
+    deps = [
+        "//lib:spreading_collection",
+    ],
+)
+
+cc_binary(
+    name = "spreading_collection_splitted",
+    srcs = ["spreading_collection_splitted.cpp"],
+    deps = [
+        "//lib:spreading_collection",
+    ],
+)
+
+cc_binary(
     name = "spreading_collection_gui",
     srcs = ["spreading_collection_gui.cpp"],
     deps = [
