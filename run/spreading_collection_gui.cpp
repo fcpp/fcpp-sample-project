@@ -1,4 +1,4 @@
-// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2023 Giorgio Audrito. All Rights Reserved.
 
 /**
  * @file spreading_collection_gui.cpp
@@ -13,10 +13,13 @@ int main() {
     //! @brief The network object type (interactive simulator with given options).
     using net_t = component::interactive_simulator<option::list>::net;
     //! @brief The initialisation values (simulation name, texture of the reference plane, node movement speed).
-    auto init_v = common::make_tagged_tuple<option::name, option::texture, option::speed>(
+    auto init_v = common::make_tagged_tuple<option::name, option::texture, option::speed, option::side, option::devices, option::tvar>(
         "Spreading-Collection Composition",
         "fcpp.png",
-        comm/4
+        25,
+        2000,
+        1000,
+        10
     );
     //! @brief Construct the network object.
     net_t network{init_v};

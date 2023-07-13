@@ -1,4 +1,4 @@
-// Copyright © 2021 Giorgio Audrito. All Rights Reserved.
+// Copyright © 2023 Giorgio Audrito. All Rights Reserved.
 
 /**
  * @file spreading_collection_run.cpp
@@ -13,7 +13,12 @@ int main() {
     //! @brief The network object type (batch simulator with given options).
     using net_t = component::batch_simulator<option::list>::net;
     //! @brief The initialisation values (node movement speed).
-    auto init_v = common::make_tagged_tuple<option::speed>(comm/4);
+    auto init_v = common::make_tagged_tuple<option::speed, option::side, option::devices, option::tvar>(
+        25,
+        2000,
+        1000,
+        10
+    );
     //! @brief Construct the network object.
     net_t network{init_v};
     //! @brief Run the simulation until exit.
