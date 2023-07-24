@@ -5,20 +5,17 @@
  * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots.
  */
 
+#include <iomanip>
+#include <sstream>
+
 #include "lib/spreading_collection.hpp"
 
 using namespace fcpp;
 
 
 int main(int argc, char** argv) {
-    std::cerr << "ARGS: " << argc;
-    for (int i=0; i<argc; ++i) std::cerr << " " << argv[i];
-    std::cerr << std::endl;
-    MPI_Init(&argc, &argv);
     //! @brief Construct the plotter object.
     option::plot_t p;
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     //! @brief The component type (batch simulator with given options).
     using comp_t = component::batch_simulator<option::list>;
     //! @brief The list of initialisation values to be used for simulations.
@@ -43,15 +40,26 @@ int main(int argc, char** argv) {
         batch::constant<option::plotter>(&p) // reference to the plotter object
     );
     //! @brief Runs the given simulations.
-    batch::mpi_run(comp_t{}, common::tags::dynamic_execution{}, init_list);
+    int provided, initialized, rank;
+    MPI_Initialized(&initialized);
+    if (not initialized) {
+        MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
+        assert(provided == MPI_THREAD_MULTIPLE);
+    }
+    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+    batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
+    if (not initialized) MPI_Finalize();
     //! @brief Builds the resulting plots.
-    if (rank == 0) {
+    if (p != option::plot_t{}) {
         option::plot_t q;
         swap(p, q);
         batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
-        std::cerr << (p == q ? "Test succeeded!" : "Test failed!") << std::endl;
-        std::cout << plot::file("distributed_batch", q.build());
+        std::stringstream sp, sq;
+        sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
+        sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
+        std::cerr << (sp.str() == sq.str() ? "Test succeeded!" : "Test failed!") << std::endl;
+        std::cout << sp.str();
+        std::cout << sq.str();
     }
-    MPI_Finalize();
     return 0;
 }
