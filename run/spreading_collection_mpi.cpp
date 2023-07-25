@@ -5,6 +5,7 @@
  * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots.
  */
 
+#include <ctime>
 #include <iomanip>
 #include <sstream>
 
@@ -12,13 +13,29 @@
 
 using namespace fcpp;
 
+//! @brief Object accumulating the CPU elapsed during its lifetime in a given counter.
+class profiler {
+  public:
+    //! @brief Constructor given a counter name.
+    profiler() : start{std::clock()} {}
+
+    //! @brief Computes elapsed time.
+    operator double() {
+        return (std::clock() - start) * 1.0 / CLOCKS_PER_SEC;
+    }
+
+  private:
+    //! @brief Stores the clock during construction.
+    std::clock_t start;
+};
+
 
 int main(int argc, char** argv) {
-    //! @brief Construct the plotter object.
+    // Construct the plotter object.
     option::plot_t p;
-    //! @brief The component type (batch simulator with given options).
+    // The component type (batch simulator with given options).
     using comp_t = component::batch_simulator<option::list>;
-    //! @brief The list of initialisation values to be used for simulations.
+    // The list of initialisation values to be used for simulations.
     auto init_list = batch::make_tagged_tuple_sequence(
         batch::arithmetic<option::seed >(0, 99, 1),     // 100 different random seeds
         batch::arithmetic<option::speed>(0, 48, 2, 10), // 25 different speeds
@@ -39,17 +56,13 @@ int main(int argc, char** argv) {
         }),
         batch::constant<option::plotter>(&p) // reference to the plotter object
     );
-    //! @brief Runs the given simulations.
-    int provided, initialized, rank;
-    MPI_Initialized(&initialized);
-    if (not initialized) {
-        MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
-        assert(provided == MPI_THREAD_MULTIPLE);
-    }
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
-    if (not initialized) MPI_Finalize();
-    //! @brief Builds the resulting plots.
+    // Runs the given simulations.
+    profiler t;
+    batch::mpi_run(comp_t{}, common::tags::dynamic_execution{}, init_list);
+    std::cerr << double(t) << std::endl;
+    // Builds the resulting plots.
+    std::cout << plot::file("distributed_batch", p.build());
+    // Checks correctness.
     if (p != option::plot_t{}) {
         option::plot_t q;
         swap(p, q);
@@ -57,9 +70,12 @@ int main(int argc, char** argv) {
         std::stringstream sp, sq;
         sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
         sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
-        std::cerr << (sp.str() == sq.str() ? "Test succeeded!" : "Test failed!") << std::endl;
-        std::cout << sp.str();
-        std::cout << sq.str();
+        if (sp.str() == sq.str()) {
+            std::cerr << "Test succeeded!" << std::endl;
+        } else {
+            std::cerr << "Test failed!" << std::endl;
+            std::cout << sp.str();
+        }
     }
     return 0;
 }
