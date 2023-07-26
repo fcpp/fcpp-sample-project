@@ -5,7 +5,7 @@
  * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots.
  */
 
-#include <ctime>
+#include <chrono>
 #include <iomanip>
 #include <sstream>
 
@@ -17,16 +17,16 @@ using namespace fcpp;
 class profiler {
   public:
     //! @brief Constructor given a counter name.
-    profiler() : start{std::clock()} {}
+    profiler() = default;
 
     //! @brief Computes elapsed time.
     operator double() {
-        return (std::clock() - start) * 1.0 / CLOCKS_PER_SEC;
+        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - start).count() * 0.001;
     }
 
   private:
     //! @brief Stores the clock during construction.
-    std::clock_t start;
+    std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
 };
 
 auto init_lister(option::plot_t& p, int max_seed) {
@@ -64,7 +64,10 @@ void plot_check(std::string name, int i, option::plot_t& p, option::plot_t& q) {
 }
 
 int main(int argc, char** argv) {
-    assert(argc == 1);
+    if (argc != 2) {
+        std::cerr << "usage: " << argv[0] << " <procs per node>" << std::endl;
+        return 0;
+    }
     // Sets up MPI.
     constexpr int rank_master = 0;
     int rank, n_procs, n_nodes, procs_per_node = atoi(argv[1]);
@@ -81,8 +84,10 @@ int main(int argc, char** argv) {
     option::plot_t q;
     if (rank == rank_master) {
         q = {};
+        profiler t;
         auto init_list = init_lister(q, 100);
         batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
+        std::cerr << "Strong scaling reference plot computed in " << double(t) << "s" << std::endl;
     }
     // The vectors storing recorded execution times.
     std::vector<double> t_static, t_dynamic;
@@ -106,7 +111,7 @@ int main(int argc, char** argv) {
         batch::mpi_barrier();
         profiler t;
         auto init_list = init_lister(p, 100);
-        batch::mpi_dynamic_run(comp_t{}, 4, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
+        batch::mpi_dynamic_run(comp_t{}, 4*threads_per_proc, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
         if (rank == 0) {
             t_dynamic.push_back(t);
             plot_check("dynamic", i, p, q);
@@ -125,8 +130,10 @@ int main(int argc, char** argv) {
         // WEAK SCALING
 
         // Compute a reference plot, to check correctness.
+        profiler t;
         auto init_list = init_lister(q, 10*n_nodes);
         batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
+        std::cerr << "Weak scaling reference plot computed in " << double(t) << "s" << std::endl;
     }
     // MPI static division.
     for (int i=0; i<10; ++i) {
@@ -146,7 +153,7 @@ int main(int argc, char** argv) {
         batch::mpi_barrier();
         profiler t;
         auto init_list = init_lister(p, 10*n_nodes);
-        batch::mpi_dynamic_run(comp_t{}, 4, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
+        batch::mpi_dynamic_run(comp_t{}, 4*threads_per_proc, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
         if (rank == rank_master) {
             t_dynamic.push_back(t);
             plot_check("dynamic", i, p, q);
