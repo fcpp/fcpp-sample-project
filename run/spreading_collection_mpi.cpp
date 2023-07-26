@@ -128,7 +128,7 @@ int main(int argc, char** argv) {
             profiler t;
             auto init_list = init_lister<true>(q, scaling_seeds[s]);
             batch::run(comp_type{}, common::tags::dynamic_execution{}, init_list);
-            std::cerr << scaling_name[s] << "scaling reference plot computed in " << double(t) << "s" << std::endl;
+            std::cerr << scaling_name[s] << " scaling reference plot computed in " << double(t) << "s" << std::endl;
         }
         // Baselines with 1 CPU
         if (n_nodes == 1) {
