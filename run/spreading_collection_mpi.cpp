@@ -74,9 +74,9 @@ void plot_check(std::string name, int i, option::plot_t& p, option::plot_t& q) {
     if (sp.str() != sq.str()) {
         std::cerr << "Plot check failed!" << std::endl;
         std::cerr << "=======================================" << std::endl;
-        std::cout << sp.str();
+        std::cerr << sp.str();
         std::cerr << "=======================================" << std::endl;
-        std::cout << sq.str();
+        std::cerr << sq.str();
         std::cerr << "=======================================" << std::endl;
     }
 }
