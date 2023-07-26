@@ -1,8 +1,8 @@
 // Copyright © 2023 Giorgio Audrito. All Rights Reserved.
 
 /**
- * @file spreading_collection_run.cpp
- * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots.
+ * @file spreading_collection_mpi.cpp
+ * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots, across multiple nodes with MPI.
  */
 
 #include <chrono>
@@ -92,7 +92,8 @@ constexpr int rank_master = 0;
 
 //! @brief Runs a series of executions, storing times and checking correctness.
 template <bool seeds_first, typename F, typename... As>
-void runner(int rank, int max_seed, option::plot_t& q, std::vector<double>& v, std::string s, F&& f) {
+void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
+    std::vector<double> v;
     for (int i=0; i<runs; ++i) {
         batch::mpi_barrier();
         profiler t;
@@ -103,6 +104,11 @@ void runner(int rank, int max_seed, option::plot_t& q, std::vector<double>& v, s
             v.push_back(t);
             plot_check(s, i, p, q);
         }
+    }
+    if (rank == rank_master) {
+        std::cerr << std::endl << s << ": ";
+        for (double x : v) std::cerr << " " << x;
+        std::cerr << std::endl << std::endl;
     }
 }
 
@@ -132,59 +138,37 @@ int main(int argc, char** argv) {
         }
         // Baselines with 1 CPU
         if (n_nodes == 1) {
-            std::vector<double> t_sfirst[5], t_slast[5];
-            runner<true >(rank, scaling_seeds[s], q, t_sfirst[0], "static seeds-first", [=](auto init_list){
+            std::cerr << std::endl << scaling_name[s] << " SCALING" << std::endl << std::endl;
+            runner<true >(rank, scaling_seeds[s], q, "static seeds-first", [=](auto init_list){
                 batch::run(comp_type{}, common::tags::parallel_execution{threads_per_proc}, init_list);
             });
-            runner<false>(rank, scaling_seeds[s], q, t_slast[0],  "static seeds-last",  [=](auto init_list){
+            runner<false>(rank, scaling_seeds[s], q, "static seeds-last",  [=](auto init_list){
                 batch::run(comp_type{}, common::tags::parallel_execution{threads_per_proc}, init_list);
             });
             for (size_t i = 1; i < 5; ++i) {
-                runner<true >(rank, scaling_seeds[s], q, t_sfirst[i], "dynamic-"" seeds-first", [=](auto init_list){
+                runner<true >(rank, scaling_seeds[s], q, "dynamic-" + std::to_string(i) + " seeds-first", [=](auto init_list){
                     batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,i}, init_list);
                 });
-                runner<false>(rank, scaling_seeds[s], q, t_slast[i],  "dynamic-"" seeds-last", [=](auto init_list){
+                runner<false>(rank, scaling_seeds[s], q, "dynamic-" + std::to_string(i) + " seeds-last", [=](auto init_list){
                     batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,i}, init_list);
                 });
-            }
-            std::cerr << std::endl << scaling_name[s] << " SCALING" << std::endl;
-            for (int i = 0; i < 5; ++i) {
-                std::cerr << std::endl << (i == 0 ? "static" : "dynamic-" + std::to_string(i)) + " seeds-first:";
-                for (double x : t_sfirst[i]) std::cerr << " " << x;
-                std::cerr << std::endl << (i == 0 ? "static" : "dynamic-" + std::to_string(i)) + " seeds-last:";
-                for (double x : t_slast[i]) std::cerr << " " << x;
             }
         } else {
-            // The vectors storing recorded execution times.
-            std::vector<double> t_static_sfirst, t_static_slast, t_dynamic_sfirst, t_dynamic_slast;
             // Construct the plotter object.
             option::plot_t p;
             // MPI static seeds-first division.
-            runner<true >(rank, scaling_seeds[s], q, t_static_sfirst,  "static seeds-first", [=](auto init_list){
+            runner<true >(rank, scaling_seeds[s], q, "static seeds-first", [=](auto init_list){
                 batch::mpi_run(comp_type{}, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
-            runner<false>(rank, scaling_seeds[s], q, t_static_slast,   "static seeds-last",  [=](auto init_list){
+            runner<false>(rank, scaling_seeds[s], q, "static seeds-last",  [=](auto init_list){
                 batch::mpi_run(comp_type{}, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
-            runner<true >(rank, scaling_seeds[s], q, t_dynamic_sfirst, "dynamic seeds-first", [=](auto init_list){
+            runner<true >(rank, scaling_seeds[s], q, "dynamic seeds-first", [=](auto init_list){
                 batch::mpi_dynamic_run(comp_type{}, 4*threads_per_proc, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
-            runner<false>(rank, scaling_seeds[s], q, t_dynamic_slast,  "dynamic seeds-last", [=](auto init_list){
+            runner<false>(rank, scaling_seeds[s], q, "dynamic seeds-last", [=](auto init_list){
                 batch::mpi_dynamic_run(comp_type{}, 4*threads_per_proc, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
-            if (rank == rank_master) {
-                // Report times and reset.
-                std::cerr << std::endl << scaling_name[s] << " SCALING" << std::endl;
-                std::cerr << std::endl << "static seeds-first:";
-                for (double x : t_static_sfirst) std::cerr << " " << x;
-                std::cerr << std::endl << "static seeds-last:";
-                for (double x : t_static_slast) std::cerr << " " << x;
-                std::cerr << std::endl << "dynamic seeds-first:";
-                for (double x : t_dynamic_sfirst) std::cerr << " " << x;
-                std::cerr << std::endl << "dynamic seeds-last:";
-                for (double x : t_dynamic_slast) std::cerr << " " << x;
-                std::cerr << std::endl;
-            }
         }
     }
     batch::mpi_finalize();
