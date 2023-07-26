@@ -52,119 +52,106 @@ auto init_lister(option::plot_t& p, int max_seed) {
     );
 }
 
-#ifndef FCPP_MPI
-#define MPI_Init_thread(...)
-#define MPI_Comm_rank(...)
-#define MPI_Comm_size(...)
-#define MPI_Barrier(...)
-#define MPI_Finalize()
-#endif
+void plot_check(std::string name, int i, option::plot_t& p, option::plot_t& q) {
+    std::stringstream sp, sq;
+    sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
+    sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
+    if (sp.str() != sq.str()) {
+        std::cerr << "MPI " << name << " run " << i << ", check failed!" << std::endl;
+        std::cout << sp.str();
+        std::cout << sq.str();
+    }
+}
 
 int main(int argc, char** argv) {
+    assert(argc == 1);
     // Sets up MPI.
-    int provided, rank, n_procs;
-    MPI_Init_thread(NULL, NULL, MPI_THREAD_MULTIPLE, &provided);
-    //assert(provided == MPI_THREAD_MULTIPLE);
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    MPI_Comm_size(MPI_COMM_WORLD, &n_procs);
+    constexpr int rank_master = 0;
+    int rank, n_procs, n_nodes, procs_per_node = atoi(argv[1]);
+    size_t threads_per_proc;
+    batch::mpi_init(rank, n_procs);
+    n_nodes = n_procs / procs_per_node;
+    threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
     // The component type (batch simulator with given options).
     using comp_t = component::batch_simulator<option::list>;
-    // Compute a reference plot.
+
+    // STRONG SCALING
+
+    // Compute a reference plot, to check correctness.
     option::plot_t q;
-    if (rank == 0) {
+    if (rank == rank_master) {
         q = {};
         auto init_list = init_lister(q, 100);
         batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
     }
-    // The vector storing recorded execution times.
+    // The vectors storing recorded execution times.
     std::vector<double> t_static, t_dynamic;
     // Construct the plotter object.
     option::plot_t p;
+    // MPI static division.
     for (int i=0; i<10; ++i) {
         p = {};
-        MPI_Barrier(MPI_COMM_WORLD);
+        batch::mpi_barrier();
         profiler t;
-        // The list of initialisation values to be used for simulations.
         auto init_list = init_lister(p, 100);
-        // Runs the given simulations.
-        batch::mpi_run(comp_t{}, common::tags::dynamic_execution{}, init_list);
-        if (rank == 0) {
+        batch::mpi_run(comp_t{}, common::tags::dynamic_execution{threads_per_proc}, init_list);
+        if (rank == rank_master) {
             t_static.push_back(t);
-            std::stringstream sp, sq;
-            sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
-            sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
-            if (sp.str() != sq.str()) {
-                std::cerr << "MPI static run " << i << ", check failed!" << std::endl;
-                std::cout << sp.str();
-                std::cout << sq.str();
-            }
+            plot_check("static", i, p, q);
         }
     }
+    // MPI dynamic division.
     for (int i=0; i<10; ++i) {
         p = {};
-        MPI_Barrier(MPI_COMM_WORLD);
+        batch::mpi_barrier();
         profiler t;
-        // The list of initialisation values to be used for simulations.
         auto init_list = init_lister(p, 100);
-        // Runs the given simulations.
-        batch::mpi_dynamic_run(comp_t{}, common::tags::dynamic_execution{}, init_list);
+        batch::mpi_dynamic_run(comp_t{}, 4, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
         if (rank == 0) {
             t_dynamic.push_back(t);
-            std::stringstream sp, sq;
-            sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
-            sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
-            if (sp.str() != sq.str()) {
-                std::cerr << "MPI dynamic run " << i << ", check failed!" << std::endl;
-                std::cout << sp.str();
-                std::cout << sq.str();
-            }
+            plot_check("dynamic", i, p, q);
         }
     }
-    if (rank == 0) {
+    if (rank == rank_master) {
+        // Report times and reset.
+        std::cerr << "STRONG SCALING:" << std::endl;
+        for (double x : t_static) std::cerr << " " << x;
+        for (double x : t_dynamic) std::cerr << " " << x;
+        std::cerr << std::endl;
+        t_static = {};
+        t_dynamic = {};
         q = {};
-        auto init_list = init_lister(q, 10*n_procs);
+
+        // WEAK SCALING
+
+        // Compute a reference plot, to check correctness.
+        auto init_list = init_lister(q, 10*n_nodes);
         batch::run(comp_t{}, common::tags::dynamic_execution{}, init_list);
     }
+    // MPI static division.
     for (int i=0; i<10; ++i) {
         p = {};
-        MPI_Barrier(MPI_COMM_WORLD);
+        batch::mpi_barrier();
         profiler t;
-        // The list of initialisation values to be used for simulations.
-        auto init_list = init_lister(p, 10*n_procs);
-        // Runs the given simulations.
-        batch::mpi_run(comp_t{}, common::tags::dynamic_execution{}, init_list);
-        if (rank == 0) {
+        auto init_list = init_lister(p, 10*n_nodes);
+        batch::mpi_run(comp_t{}, common::tags::dynamic_execution{threads_per_proc}, init_list);
+        if (rank == rank_master) {
             t_static.push_back(t);
-            std::stringstream sp, sq;
-            sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
-            sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
-            if (sp.str() != sq.str()) {
-                std::cerr << "MPI static run " << i << ", check failed!" << std::endl;
-                std::cout << sp.str();
-                std::cout << sq.str();
-            }
+            plot_check("static", i, p, q);
         }
     }
+    // MPI dynamic division.
     for (int i=0; i<10; ++i) {
         p = {};
-        MPI_Barrier(MPI_COMM_WORLD);
+        batch::mpi_barrier();
         profiler t;
-        // The list of initialisation values to be used for simulations.
-        auto init_list = init_lister(p, 10*n_procs);
-        // Runs the given simulations.
-        batch::mpi_dynamic_run(comp_t{}, common::tags::dynamic_execution{}, init_list);
-        if (rank == 0) {
+        auto init_list = init_lister(p, 10*n_nodes);
+        batch::mpi_dynamic_run(comp_t{}, 4, 4, common::tags::dynamic_execution{threads_per_proc}, init_list);
+        if (rank == rank_master) {
             t_dynamic.push_back(t);
-            std::stringstream sp, sq;
-            sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
-            sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
-            if (sp.str() != sq.str()) {
-                std::cerr << "MPI dynamic run " << i << ", check failed!" << std::endl;
-                std::cout << sp.str();
-                std::cout << sq.str();
-            }
+            plot_check("dynamic", i, p, q);
         }
     }
-    MPI_Finalize();
+    batch::mpi_finalize();
     return 0;
 }
