@@ -122,7 +122,7 @@ int main(int argc, char** argv) {
     batch::mpi_init(rank, n_procs);
     n_nodes = n_procs / procs_per_node;
     size_t threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
-    std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
+    std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node << " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
 
     std::vector<std::string> scaling_name = {"STRONG", "WEAK"};
     std::vector<int> scaling_seeds = {100, 10*n_nodes};
