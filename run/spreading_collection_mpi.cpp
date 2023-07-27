@@ -64,8 +64,7 @@ auto init_lister(option::plot_t& p, int max_seed) {
 }
 
 //! @brief Checks whether two computed plots are practically identical, printing corresponding output.
-void plot_check(std::string name, int i, option::plot_t& p, option::plot_t& q) {
-    std::cerr << "MPI " << name << " run " << i << " completed." << std::endl;
+void plot_check(option::plot_t& p, option::plot_t& q) {
     std::stringstream sp, sq;
     sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
     sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
@@ -100,7 +99,8 @@ void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
         f(init_list);
         if (rank == rank_master) {
             v.push_back(t);
-            plot_check(s, i, p, q);
+            std::cerr << "MPI " << s << " run " << i << " completed in " << double(t) << "s." << std::endl;
+            plot_check(p, q);
         }
     }
     if (rank == rank_master) {
@@ -120,7 +120,8 @@ int main(int argc, char** argv) {
     batch::mpi_init(rank, n_procs);
     n_nodes = n_procs / procs_per_node;
     size_t threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
-    std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node << " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
+    if (rank == rank_master)
+        std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node << " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
 
     std::vector<std::string> scaling_name = {"STRONG", "WEAK"};
     std::vector<int> scaling_seeds = {100, 10*n_nodes};
