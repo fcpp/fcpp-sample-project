@@ -119,10 +119,10 @@ int main(int argc, char** argv) {
     }
     // Sets up MPI.
     int rank, n_procs, n_nodes, procs_per_node = atoi(argv[1]);
-    size_t threads_per_proc;
     batch::mpi_init(rank, n_procs);
     n_nodes = n_procs / procs_per_node;
-    threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
+    size_t threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
+    std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
 
     std::vector<std::string> scaling_name = {"STRONG", "WEAK"};
     std::vector<int> scaling_seeds = {100, 10*n_nodes};
@@ -139,20 +139,12 @@ int main(int argc, char** argv) {
         // Baselines with 1 CPU
         if (n_nodes == 1) {
             std::cerr << std::endl << scaling_name[s] << " SCALING" << std::endl << std::endl;
-            runner<true >(rank, scaling_seeds[s], q, "static seeds-first", [=](auto init_list){
-                batch::run(comp_type{}, common::tags::parallel_execution{threads_per_proc}, init_list);
+            runner<true >(rank, scaling_seeds[s], q, "baseline seeds-first", [=](auto init_list){
+                batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, init_list);
             });
-            runner<false>(rank, scaling_seeds[s], q, "static seeds-last",  [=](auto init_list){
-                batch::run(comp_type{}, common::tags::parallel_execution{threads_per_proc}, init_list);
+            runner<false>(rank, scaling_seeds[s], q, "baseline seeds-last", [=](auto init_list){
+                batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, init_list);
             });
-            for (size_t i = 1; i < 5; ++i) {
-                runner<true >(rank, scaling_seeds[s], q, "dynamic-" + std::to_string(i) + " seeds-first", [=](auto init_list){
-                    batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,i}, init_list);
-                });
-                runner<false>(rank, scaling_seeds[s], q, "dynamic-" + std::to_string(i) + " seeds-last", [=](auto init_list){
-                    batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,i}, init_list);
-                });
-            }
         } else {
             // Construct the plotter object.
             option::plot_t p;
