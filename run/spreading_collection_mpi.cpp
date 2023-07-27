@@ -64,20 +64,18 @@ auto init_lister(option::plot_t& p, int max_seed) {
 }
 
 //! @brief Checks whether two computed plots are practically identical, printing corresponding output.
-bool plot_check(option::plot_t& p, option::plot_t& q) {
+void plot_check(option::plot_t& p, option::plot_t& q) {
     std::stringstream sp, sq;
     sp << std::setprecision(3) << plot::file("distributed_batch", p.build());
     sq << std::setprecision(3) << plot::file("distributed_batch", q.build());
     if (sp.str() != sq.str()) {
         std::cerr << "Plot check failed!" << std::endl;
-        std::cout << "=======================================" << std::endl;
-        std::cout << sp.str();
-        std::cout << "=======================================" << std::endl;
-        std::cout << sq.str();
-        std::cout << "=======================================" << std::endl;
-        return true;
+        std::cerr << "=======================================" << std::endl;
+        std::cerr << sp.str();
+        std::cerr << "=======================================" << std::endl;
+        std::cerr << sq.str();
+        std::cerr << "=======================================" << std::endl;
     }
-    return false;
 }
 
 //! @brief The component type (batch simulator with given options).
@@ -102,14 +100,13 @@ void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
         if (rank == rank_master) {
             v.push_back(t);
             std::cerr << "MPI " << s << " run " << i << " completed in " << double(t) << "s." << std::endl;
-            if (plot_check(p, q))
-                std::cout << "MPI " << s << " run " << i << " above failed in " << double(t) << "s." << std::endl;
+            plot_check(p, q);
         }
     }
     if (rank == rank_master) {
-        std::cerr << std::endl << s << ": ";
-        for (double x : v) std::cerr << " " << x;
-        std::cerr << std::endl << std::endl;
+        std::cout << std::endl << s << ": ";
+        for (double x : v) std::cout << " " << x;
+        std::cout << std::endl << std::endl;
     }
 }
 
