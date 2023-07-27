@@ -59,7 +59,7 @@ auto init_lister(option::plot_t& p, int max_seed) {
             double s = common::get<option::side>(x);
             return d*s*s/(3.141592653589793*comm*comm) + 0.5;
         }),
-        batch::constant<option::plotter>(&p) // reference to the plotter object
+        batch::constant<option::plotter,option::output>(&p,nullptr) // reference to the plotter object
     );
 }
 
