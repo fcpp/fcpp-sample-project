@@ -49,8 +49,6 @@ auto init_lister(option::plot_t& p, int max_seed) {
         batch::arithmetic<option::hops >(1, 25, 1, 10), // 25 different hop sizes
         batch::arithmetic<option::tvar >(0, 48, 2, 10), // 25 different time variances
         maybe_seeds(max_seed, common::number_sequence<not seeds_first>{}), // max_seed different random seeds
-        // generate output file name for the run
-        batch::stringify<option::output>("output/spreading_collection_mpi", "txt"),
         batch::formula<option::side, size_t>([](auto const& x) {
             double h = common::get<option::hops>(x);
             return h * comm / sqrt(2.0) + 0.5;
