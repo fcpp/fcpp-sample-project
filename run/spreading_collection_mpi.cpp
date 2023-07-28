@@ -163,7 +163,7 @@ int main(int argc, char** argv) {
             runner<false>(rank, scaling_seeds[s], q, "dynamic seeds-last", [=](auto init_list){
                 batch::mpi_better_dynamic_run(comp_type{}, 8, 8, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
-            runner<true >(rank, scaling_seeds[s], q, "dynamic seeds-first", [=](auto init_list){
+            runner<true >(rank, scaling_seeds[s], q, "dynamic seeds-shuffle", [=](auto init_list){
                 batch::mpi_better_dynamic_run(comp_type{}, 8, 8, common::tags::dynamic_execution{threads_per_proc}, init_list, true);
             });
         }
