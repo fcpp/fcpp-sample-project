@@ -90,6 +90,7 @@ constexpr int rank_master = 0;
 //! @brief Runs a series of executions, storing times and checking correctness.
 template <bool seeds_first, typename F, typename... As>
 void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
+    if (rank == rank_master) std::cerr << "MPI " << s << ", starting " << runs << "runs." << std::endl;
     std::vector<double> v;
     for (int i=0; i<runs; ++i) {
         batch::mpi_barrier();
