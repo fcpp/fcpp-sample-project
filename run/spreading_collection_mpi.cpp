@@ -90,7 +90,7 @@ constexpr int rank_master = 0;
 //! @brief Runs a series of executions, storing times and checking correctness.
 template <bool seeds_first, typename F, typename... As>
 void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
-    if (rank == rank_master) std::cerr << "MPI " << s << ", starting " << runs << "runs." << std::endl;
+    if (rank == rank_master) std::cerr << "MPI " << s << ", starting " << runs << " runs." << std::endl;
     std::vector<double> v;
     for (int i=0; i<runs; ++i) {
         batch::mpi_barrier();
@@ -124,17 +124,18 @@ int main(int argc, char** argv) {
     if (rank == rank_master)
         std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node << " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
 
-    std::vector<std::string> scaling_name = {"STRONG", "WEAK"};
-    std::vector<int> scaling_seeds = {100, 10*n_nodes};
+    std::vector<std::string> scaling_name = {"WEAK", "STRONG"};
+    std::vector<int> scaling_seeds = {10*n_nodes, 100};
 
     for (int s = 0; s < 2; ++s) {
         // Compute a reference plot, to check correctness.
         option::plot_t q;
         if (rank == rank_master) {
+            std::cerr << scaling_name[s] << " SCALING:" << std::endl;
             profiler t;
             auto init_list = init_lister<true>(q, scaling_seeds[s]);
             batch::run(comp_type{}, common::tags::dynamic_execution{}, init_list);
-            std::cerr << scaling_name[s] << " scaling reference plot computed in " << double(t) << "s" << std::endl;
+            std::cerr << "reference plot computed in " << double(t) << "s" << std::endl;
         }
         // Baselines with 1 CPU
         if (n_nodes == 1) {
