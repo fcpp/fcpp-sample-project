@@ -105,9 +105,8 @@ void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
         }
     }
     if (rank == rank_master) {
-        std::cout << std::endl << s << ": ";
-        for (double x : v) std::cout << " " << x;
-        std::cout << std::endl << std::endl;
+        std::cout << std::endl << s << ":\n";
+        for (double x : v) std::cout << x << std::endl;
     }
 }
 
