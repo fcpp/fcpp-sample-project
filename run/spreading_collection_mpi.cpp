@@ -87,6 +87,9 @@ constexpr int runs = 5;
 //! @brief The rank of the master process.
 constexpr int rank_master = 0;
 
+//! @brief The number of MPI processes per node.
+constexpr int procs_per_node = 1
+
 //! @brief Runs a series of executions, storing times and checking correctness.
 template <bool seeds_first, typename F, typename... As>
 void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
@@ -110,13 +113,9 @@ void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
     }
 }
 
-int main(int argc, char** argv) {
-    if (argc != 2) {
-        std::cerr << "usage: " << argv[0] << " <procs per node>" << std::endl;
-        return 0;
-    }
+int main() {
     // Sets up MPI.
-    int rank, n_procs, n_nodes, procs_per_node = atoi(argv[1]);
+    int rank, n_procs, n_nodes;
     batch::mpi_init(rank, n_procs);
     n_nodes = n_procs / procs_per_node;
     size_t threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
