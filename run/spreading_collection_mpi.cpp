@@ -88,7 +88,7 @@ constexpr int runs = 5;
 constexpr int rank_master = 0;
 
 //! @brief The number of MPI processes per node.
-constexpr int procs_per_node = 1
+constexpr int procs_per_node = 1;
 
 //! @brief Runs a series of executions, storing times and checking correctness.
 template <bool seeds_first, typename F, typename... As>
