@@ -82,7 +82,7 @@ void plot_check(option::plot_t& p, option::plot_t& q) {
 using comp_type = component::batch_simulator<option::list>;
 
 //! @brief The number of runs to average times.
-constexpr int runs = 10;
+constexpr int runs = 5;
 
 //! @brief The rank of the master process.
 constexpr int rank_master = 0;
@@ -159,13 +159,13 @@ int main(int argc, char** argv) {
                 batch::mpi_run(comp_type{}, common::tags::dynamic_execution{threads_per_proc}, init_list, true);
             });
             runner<true >(rank, scaling_seeds[s], q, "dynamic seeds-first", [=](auto init_list){
-                batch::mpi_better_dynamic_run(comp_type{}, 8, 8, common::tags::dynamic_execution{threads_per_proc}, init_list);
+                batch::mpi_another_dynamic_run(comp_type{}, n_nodes, 16384, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
             runner<false>(rank, scaling_seeds[s], q, "dynamic seeds-last", [=](auto init_list){
-                batch::mpi_better_dynamic_run(comp_type{}, 8, 8, common::tags::dynamic_execution{threads_per_proc}, init_list);
+                batch::mpi_another_dynamic_run(comp_type{}, n_nodes, 16384, common::tags::dynamic_execution{threads_per_proc}, init_list);
             });
-            runner<true >(rank, scaling_seeds[s], q, "dynamic seeds-shuffle", [=](auto init_list){
-                batch::mpi_better_dynamic_run(comp_type{}, 8, 8, common::tags::dynamic_execution{threads_per_proc}, init_list, true);
+            runner<false>(rank, scaling_seeds[s], q, "dynamic seeds-shuffle", [=](auto init_list){
+                batch::mpi_another_dynamic_run(comp_type{}, n_nodes, 16384, common::tags::dynamic_execution{threads_per_proc}, init_list, true);
             });
         }
     }
