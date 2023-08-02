@@ -149,22 +149,22 @@ int main() {
             option::plot_t p;
             // MPI static seeds-first division.
             runner<true >(rank, scaling_seeds[s], q, "static seeds-first", [=](auto init_list){
-                batch::mpi_run(comp_type{}, common::tags::dynamic_execution{threads_per_proc}, init_list);
+                batch::run(comp_type{}, common::tags::distributed_execution{threads_per_proc, 1, 0.0, false}, init_list);
             });
             runner<false>(rank, scaling_seeds[s], q, "static seeds-last",  [=](auto init_list){
-                batch::mpi_run(comp_type{}, common::tags::dynamic_execution{threads_per_proc}, init_list);
+                batch::run(comp_type{}, common::tags::distributed_execution{threads_per_proc, 1, 0.0, false}, init_list);
             });
             runner<true >(rank, scaling_seeds[s], q, "static seeds-shuffle", [=](auto init_list){
-                batch::mpi_run(comp_type{}, common::tags::dynamic_execution{threads_per_proc}, init_list, true);
+                batch::run(comp_type{}, common::tags::distributed_execution{threads_per_proc, 1, 0.0, true}, init_list);
             });
             runner<true >(rank, scaling_seeds[s], q, "dynamic seeds-first", [=](auto init_list){
-                batch::mpi_another_dynamic_run(comp_type{}, n_nodes, 16384, common::tags::dynamic_execution{threads_per_proc}, init_list);
+                batch::run(comp_type{}, common::tags::distributed_execution{threads_per_proc, 1, 1.0, false}, init_list);
             });
             runner<false>(rank, scaling_seeds[s], q, "dynamic seeds-last", [=](auto init_list){
-                batch::mpi_another_dynamic_run(comp_type{}, n_nodes, 16384, common::tags::dynamic_execution{threads_per_proc}, init_list);
+                batch::run(comp_type{}, common::tags::distributed_execution{threads_per_proc, 1, 1.0, false}, init_list);
             });
             runner<false>(rank, scaling_seeds[s], q, "dynamic seeds-shuffle", [=](auto init_list){
-                batch::mpi_another_dynamic_run(comp_type{}, n_nodes, 16384, common::tags::dynamic_execution{threads_per_proc}, init_list, true);
+                batch::run(comp_type{}, common::tags::distributed_execution{threads_per_proc, 1, 1.0, true}, init_list);
             });
         }
     }
