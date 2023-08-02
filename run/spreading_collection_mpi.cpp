@@ -115,9 +115,9 @@ void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
 
 int main() {
     // Sets up MPI.
-    int rank, n_procs, n_nodes;
+    int rank, n_procs;
     batch::mpi_init(rank, n_procs);
-    n_nodes = n_procs / procs_per_node;
+    int n_nodes = n_procs / procs_per_node;
     size_t threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
     if (rank == rank_master)
         std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node << " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
@@ -137,7 +137,6 @@ int main() {
         }
         // Baselines with 1 CPU
         if (n_nodes == 1) {
-            std::cerr << std::endl << scaling_name[s] << " SCALING" << std::endl << std::endl;
             runner<true >(rank, scaling_seeds[s], q, "baseline seeds-first", [=](auto init_list){
                 batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, init_list);
             });
