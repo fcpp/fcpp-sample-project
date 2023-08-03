@@ -113,6 +113,20 @@ void runner(int rank, int max_seed, option::plot_t& q, std::string s, F&& f) {
     }
 }
 
+//! @brief Prints given values on cout and cerr (empty overload).
+inline void multi_print() {
+    std::cout << std::endl;
+    std::cerr << std::endl;
+}
+
+//! @brief Prints given values on cout and cerr (active overload).
+template <typename T, typename... Ts>
+inline void multi_print(T&& x, Ts&&... xs) {
+    std::cout << std::forward<T>(x);
+    std::cerr << std::forward<T>(x);
+    multi_print(xs...);
+}
+
 int main() {
     // Sets up MPI.
     int rank, n_procs;
@@ -120,7 +134,7 @@ int main() {
     int n_nodes = n_procs / procs_per_node;
     size_t threads_per_proc = std::thread::hardware_concurrency() / procs_per_node;
     if (rank == rank_master)
-        std::cerr << "Running on " << n_nodes << " nodes, with " << procs_per_node << " MPI processes each, and " << threads_per_proc << " threads for each process." << std::endl;
+        multi_print("Running on ", n_nodes, " nodes, with ", threads_per_proc, " threads for each process.");
 
     std::vector<std::string> scaling_name = {"WEAK", "STRONG"};
     std::vector<int> scaling_seeds = {10*n_nodes, 100};
@@ -129,7 +143,7 @@ int main() {
         // Compute a reference plot, to check correctness.
         option::plot_t q;
         if (rank == rank_master) {
-            std::cerr << scaling_name[s] << " SCALING:" << std::endl;
+            multi_print(scaling_name[s], " SCALING:");
             profiler t;
             auto init_list = init_lister<true>(q, scaling_seeds[s]);
             batch::run(comp_type{}, common::tags::dynamic_execution{}, init_list);
