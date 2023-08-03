@@ -143,7 +143,7 @@ int main() {
         // Compute a reference plot, to check correctness.
         option::plot_t q;
         if (rank == rank_master) {
-            multi_print(scaling_name[s], " SCALING:");
+            multi_print("\n", scaling_name[s], " SCALING:");
             profiler t;
             auto init_list = init_lister<true>(q, scaling_seeds[s]);
             batch::run(comp_type{}, common::tags::dynamic_execution{}, init_list);
@@ -156,6 +156,16 @@ int main() {
             });
             runner<false>(rank, scaling_seeds[s], q, "baseline seeds-last", [=](auto init_list){
                 batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, init_list);
+            });
+            runner<true >(rank, scaling_seeds[s], q, "baseline seeds-first-shuffle", [=](auto init_list){
+                auto seq = make_tagged_tuple_sequences(init_list);
+                seq.shuffle(42);
+                batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, seq);
+            });
+            runner<false>(rank, scaling_seeds[s], q, "baseline seeds-last-shuffle", [=](auto init_list){
+                auto seq = make_tagged_tuple_sequences(init_list);
+                seq.shuffle(42);
+                batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, seq);
             });
         } else {
             // Construct the plotter object.
