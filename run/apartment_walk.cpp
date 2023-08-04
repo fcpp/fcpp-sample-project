@@ -1,8 +1,8 @@
-// Copyright © 2021 Gianmarco Rampulla. All Rights Reserved.
+// Copyright © 2023 Gianmarco Rampulla. All Rights Reserved.
 
 /**
- * @file test_sim_map.cpp
- * @brief Quick experiment for simulated map component.
+ * @file apartment_walk.cpp
+ * @brief Minimal experiment for the navigator component.
  */
 
 // [INTRODUCTION]
