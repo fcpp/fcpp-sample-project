@@ -140,8 +140,8 @@ using namespace coordination::tags;
 
 //! @brief The randomised sequence of rounds for every node (about one every second, with 10% variance).
 using round_s = sequence::periodic<
-    distribution::interval_n<times_t, 0, 1>,       // uniform time in the [0,1] interval for start
-    distribution::weibull< // weibull-distributed time for interval (10/10=1 mean, 1/10=0.1 deviation)
+    distribution::interval_n<times_t, 0, 1>, // uniform time in the [0,1] interval for start
+    distribution::weibull< // weibull-distributed time for interval (mean 1, deviation equal to tvar divided by 100)
         distribution::constant_n<double, 1>,
         functor::div<distribution::constant_i<double, tvar>, distribution::constant_n<double, 100>>
     >,
@@ -241,7 +241,7 @@ DECLARE_OPTIONS(list,
         hops,   double,
         speed,  double
     >,
-    plot_type<plot_t>,         // the plot description to be used
+    plot_type<plot_t>, // the plot description to be used
     dimension<dim>, // dimensionality of the space
     connector<connect::fixed<comm, 1, dim>>, // connection allowed within a fixed comm range
     shape_tag<node_shape>, // the shape of a node is read from this tag in the store

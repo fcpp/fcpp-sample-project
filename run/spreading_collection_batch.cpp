@@ -23,6 +23,7 @@ int main() {
         batch::arithmetic<option::tvar >(0, 48, 2, 10), // 25 different time variances
         // generate output file name for the run
         batch::stringify<option::output>("output/spreading_collection_batch", "txt"),
+        // computes side length from hops
         batch::formula<option::side, size_t>([](auto const& x) {
             double h = common::get<option::hops>(x);
             return h * comm / sqrt(2.0) + 0.5;
