@@ -159,12 +159,12 @@ int main() {
             });
             runner<true >(rank, scaling_seeds[s], q, "baseline seeds-first-shuffle", [=](auto init_list){
                 auto seq = make_tagged_tuple_sequences(init_list);
-                seq.shuffle(42);
+                seq.shuffle();
                 batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, seq);
             });
             runner<false>(rank, scaling_seeds[s], q, "baseline seeds-last-shuffle", [=](auto init_list){
                 auto seq = make_tagged_tuple_sequences(init_list);
-                seq.shuffle(42);
+                seq.shuffle();
                 batch::run(comp_type{}, common::tags::dynamic_execution{threads_per_proc,1}, seq);
             });
         } else {
