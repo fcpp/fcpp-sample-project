@@ -2,7 +2,7 @@
 
 /**
  * @file spreading_collection_mpi.cpp
- * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots, across multiple nodes with MPI.
+ * @brief Runs multiple executions of the spreading collection case study non-interactively from the command line, producing overall plots, across multiple nodes with MPI, in order to test MPI performance.
  */
 
 #include <chrono>

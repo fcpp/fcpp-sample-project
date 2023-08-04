@@ -1,4 +1,12 @@
 cc_binary(
+    name = "apartment_walk",
+    srcs = ["apartment_walk.cpp"],
+    deps = [
+        "@fcpp//lib:fcpp",
+    ],
+)
+
+cc_binary(
     name = "channel_broadcast",
     srcs = ["channel_broadcast.cpp"],
     deps = [
@@ -34,32 +42,16 @@ cc_binary(
 )
 
 cc_binary(
-    name = "spreading_collection_mpi",
-    srcs = ["spreading_collection_mpi.cpp"],
-    deps = [
-        "//lib:spreading_collection",
-    ],
-)
-
-cc_binary(
-    name = "spreading_collection_mpi_2",
-    srcs = ["spreading_collection_mpi_2.cpp"],
-    deps = [
-        "//lib:spreading_collection",
-    ],
-)
-
-cc_binary(
-    name = "spreading_collection_splitted",
-    srcs = ["spreading_collection_splitted.cpp"],
-    deps = [
-        "//lib:spreading_collection",
-    ],
-)
-
-cc_binary(
     name = "spreading_collection_gui",
     srcs = ["spreading_collection_gui.cpp"],
+    deps = [
+        "//lib:spreading_collection",
+    ],
+)
+
+cc_binary(
+    name = "spreading_collection_mpi",
+    srcs = ["spreading_collection_mpi.cpp"],
     deps = [
         "//lib:spreading_collection",
     ],
