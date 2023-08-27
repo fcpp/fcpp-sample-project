@@ -193,11 +193,11 @@ using store_t = tuple_store<
 //! @brief The tags and corresponding aggregators to be logged.
 using aggregator_t = aggregators<
     true_distance,      aggregator::max<double>,
-    diameter,           aggregator::combine<
+    diameter,           aggregator::only_finite<aggregator::combine<
                             aggregator::min<double>,
                             aggregator::mean<double>,
                             aggregator::max<double>
-                        >
+                        >>
 >;
 //! @brief The aggregator to be used on logging rows for plotting.
 using row_aggregator_t = common::type_sequence<aggregator::mean<double>>;

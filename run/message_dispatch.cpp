@@ -75,9 +75,9 @@ DECLARE_OPTIONS(opt,
     >,
     aggregator_t,
     log_functors<
-        avg_first_delivery, functor::div<aggregator::sum<first_delivery, true>, aggregator::sum<delivery_count, false>>,
-        avg_msg_exchanged,  functor::div<functor::diff<aggregator::sum<tot_msg, false>>, distribution::constant_n<double, devices>>,
-        avg_active_proc,    functor::div<functor::diff<aggregator::sum<tot_proc, false>>, distribution::constant_n<double, devices>>
+        avg_first_delivery, functor::div<aggregator::sum<first_delivery>, aggregator::sum<delivery_count>>,
+        avg_msg_exchanged,  functor::div<functor::diff<aggregator::sum<tot_msg>>, distribution::constant_n<double, devices>>,
+        avg_active_proc,    functor::div<functor::diff<aggregator::sum<tot_proc>>, distribution::constant_n<double, devices>>
     >,
     init<
         x,                  rectangle_d,

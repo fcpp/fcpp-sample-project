@@ -152,7 +152,7 @@ namespace tags {
 //! @brief Shorthand for a set of devices.
 using set_t = std::unordered_set<device_t>;
 //! @brief Shorthand for a map associating times to messages.
-using map_t = std::unordered_map<message, times_t>;
+using map_t = std::unordered_map<message, times_t, common::hash<message>>;
 
 //! @brief Main function.
 MAIN() {
@@ -188,7 +188,7 @@ MAIN() {
         procs.push_back(color::hsva(m.to*360.0/devices, 1, 1));
         bool inpath = below.count(m.from) + below.count(m.to) > 0;
         status s = node.uid == m.to ? status::terminated_output :
-                   inpath ? status::internal : status::external;
+                   inpath ? status::internal : status::border;
         return make_tuple(node.current_time(), s);
     }, m);
     // process and msg stats
