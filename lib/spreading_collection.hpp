@@ -57,7 +57,7 @@ namespace tags {
     //! @brief Diameter of the network (in the source).
     struct source_diameter {};
     //! @brief Diameter of the network (in every node).
-    struct diameter {};
+    struct diameter;
     //! @brief Color representing the distance of the current node.
     struct distance_c {};
     //! @brief Color representing the diameter of the network (in the source).
