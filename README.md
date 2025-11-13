@@ -93,9 +93,13 @@ Alternatively, you can build the container yourself with the following command:
 ```
 docker build -t docker.pkg.github.com/fcpp/fcpp/container:1.0 .
 ```
-Once you have the Docker container locally available, type the following command to enter the container:
+Once you have the Docker container locally available, enable access to xhost from docker (for GUI):
 ```
-docker run -it --volume $PWD:/fcpp --workdir /fcpp docker.pkg.github.com/fcpp/fcpp/container:1.0 bash
+xhost +local:docker
+```
+and then type the following command to enter the container:
+```
+docker run -it --rm --volume $PWD:/sample-project --workdir /sample-project -e DISPLAY=:0 -v /tmp/.X11-unix:/tmp/.X11-unix --entrypoint /bin/bash docker.pkg.github.com/fcpp/fcpp/container:1.0
 ```
 and the following command to exit it:
 ```
