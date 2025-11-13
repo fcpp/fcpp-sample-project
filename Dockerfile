@@ -1,22 +1,34 @@
-FROM debian:bullseye
-MAINTAINER giorgio.audrito@gmail.com
-ARG DEBIAN_FRONTEND=noninteractive
+FROM ubuntu:22.04 AS build
 
-# Step 2: install packages needed for ./make.sh all
 RUN apt-get -qq update &&\
-    apt-get -qq -y install doxygen texlive texlive-font-utils cmake ninja-build gcc g++ &&\
+    apt-get -qq -y install cmake ninja-build gcc g++ &&\
     apt-get -qq clean all
 
-# Step 3: install packages needed for ./make.sh run
-RUN apt-get -qq -y install git less procps asymptote htop &&\
+RUN apt-get -qq -y install git less procps htop &&\
     apt-get -qq clean all
 
-# Step 4: install packages needed for bazel
-RUN apt-get -qq -y install apt-transport-https curl gnupg git less procps asymptote htop &&\
-    apt-get -qq clean all &&\
-    curl -fsSL https://bazel.build/bazel-release.pub.gpg | gpg --dearmor > /etc/apt/trusted.gpg.d/bazel.gpg &&\
-    echo "deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8" | tee /etc/apt/sources.list.d/bazel.list
+RUN apt-get -qq -y install xorg-dev
 
-# Step 5: install bazel itself
-RUN apt-get -qq -y install bazel-bootstrap &&\
-    apt-get -qq clean all
+RUN apt-get update && apt-get install -y \
+    libgl1 \
+    libgl1-mesa-glx \
+    libglu1-mesa \
+    mesa-utils \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libgl1-mesa-dev \
+    libglu1-mesa-dev \
+    freeglut3-dev
+
+RUN apt-get -qq -y install libwayland-dev libxkbcommon-dev
+
+RUN mkdir project
+
+WORKDIR project
+
+COPY . .
+
+# Set environment variable to use host's X11 display
+ENV DISPLAY=:0
