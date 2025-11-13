@@ -24,11 +24,5 @@ RUN apt-get update && apt-get install -y \
 
 RUN apt-get -qq -y install libwayland-dev libxkbcommon-dev
 
-RUN mkdir project
-
-WORKDIR project
-
-COPY . .
-
 # Set environment variable to use host's X11 display
 ENV DISPLAY=:0
