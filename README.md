@@ -83,8 +83,6 @@ brew install cmake asymptote doxygen
 
 ### Docker container
 
-**Warning:** the graphical simulations are based on OpenGL, which is **not** available in the Docker container. Use this system for batch simulations only.
-
 Download Docker from [https://www.docker.com](https://www.docker.com), then you can download the Docker container from GitHub by typing the following command in a terminal:
 ```
 docker pull docker.pkg.github.com/fcpp/fcpp/container:1.0
